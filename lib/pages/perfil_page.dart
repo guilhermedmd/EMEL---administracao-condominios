@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 class perfil_page extends StatelessWidget {
   Widget build(BuildContext context) {
+    // Essa página não sofreu a alteração do DefaultLayout
+    // Provavelmente essa página será descartada no futuro
     final altura_tela = MediaQuery.of(context).size.height;
     final largura_tela = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -12,6 +14,7 @@ class perfil_page extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
