@@ -1,3 +1,4 @@
+import 'package:emel/pages/PerfilPage.dart';
 import 'package:flutter/material.dart';
 
 class InicialPage extends StatelessWidget {
@@ -50,7 +51,7 @@ class InicialPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO: tela do morador
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => PerfilPage()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00D09E),

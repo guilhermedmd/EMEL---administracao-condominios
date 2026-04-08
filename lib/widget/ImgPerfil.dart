@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class img_perfil extends StatelessWidget{
+class Imgperfil extends StatelessWidget{
   Widget build(BuildContext content){
     return ClipRRect(
                   borderRadius: BorderRadius.circular(100),
