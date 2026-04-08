@@ -79,7 +79,7 @@ class InicialPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => TelaPagamentos()),
+                      MaterialPageRoute(builder: (context) => TelaPagamentos()), // rota pra tela pagamento
                     );
                     // TODO: tela do visitante
                   },
