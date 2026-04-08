@@ -1,5 +1,6 @@
 import 'package:emel/pages/PerfilPage.dart';
 import 'package:flutter/material.dart';
+import 'package:emel/pages/telaPagamentos.dart';
 
 class InicialPage extends StatelessWidget {
   const InicialPage({super.key});
@@ -14,7 +15,6 @@ class InicialPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               /// LOGO
               Column(
                 children: const [
@@ -51,7 +51,10 @@ class InicialPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PerfilPage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PerfilPage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00D09E),
@@ -74,6 +77,10 @@ class InicialPage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => TelaPagamentos()),
+                    );
                     // TODO: tela do visitante
                   },
                   style: ElevatedButton.styleFrom(
@@ -99,7 +106,7 @@ class InicialPage extends StatelessWidget {
                   fontSize: 12,
                   decoration: TextDecoration.underline,
                 ),
-              )
+              ),
             ],
           ),
         ),

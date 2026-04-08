@@ -21,6 +21,7 @@ class TelaPagamentos extends StatelessWidget {
         backgroundColor: const Color(0xFF00D09E),
         elevation: 0,
       ),
+
       body: Column(
         children: [
           Center(
@@ -56,17 +57,39 @@ class TelaPagamentos extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 140),
+
+          SizedBox(height: 130), // separa os containers
+
           Expanded(
+            // Container dos meses
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(18),
               decoration: const BoxDecoration(
                 color: Color(0xFFF1FFF3),
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(80),
-                  topRight: Radius.circular(80),
+                  topLeft: Radius.circular(60), //borda esquerda
+                  topRight: Radius.circular(60), //borda direita
                 ),
+              ),
+
+              //Janeiro
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      "Janeiro",
+                      style: GoogleFonts.poppins(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500, //w500 = Medium
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20), // espaço
+                ],
               ),
             ),
           ),
