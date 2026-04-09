@@ -16,6 +16,6 @@ void main() {
       // Isso aqui padroniza a fonte para o app TODO:
       textTheme: GoogleFonts.poppinsTextTheme(), 
     ),
-    home: const NavegacaoPage(),
+    home: SplashPage(),
   ));
 }

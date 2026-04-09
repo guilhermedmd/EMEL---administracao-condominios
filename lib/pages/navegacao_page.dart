@@ -33,9 +33,9 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
           });
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.payments), label: 'Pagtos'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+          BottomNavigationBarItem(icon: Icon(Icons.home, size: 30,), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.payments, size: 30,), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.person, size: 30,), label: ''),
         ],
       ),
     );

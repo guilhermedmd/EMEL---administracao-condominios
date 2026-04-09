@@ -1,3 +1,4 @@
+import 'package:emel/pages/navegacao_page.dart';
 import 'package:emel/widget/ImgPerfil.dart';
 import 'package:emel/widget/default_layout.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +23,9 @@ class PerfilPage extends StatelessWidget {
         child: Icon(Icons.logout),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-
+      
       body: Defaultlayout(
+        heightConst: 0.70,
         child: Stack(
           // Deixa a imagem de perfil vazar para fora
           clipBehavior: Clip.none,
