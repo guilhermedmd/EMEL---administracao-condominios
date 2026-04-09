@@ -1,5 +1,5 @@
 import 'package:emel/widget/ImgPerfil.dart';
-import 'package:emel/widget/DefaultLayout.dart';
+import 'package:emel/widget/default_layout.dart';
 import 'package:flutter/material.dart';
 
 class PerfilPage extends StatelessWidget {

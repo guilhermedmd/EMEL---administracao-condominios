@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 
 class TelaPagamentos extends StatelessWidget {
@@ -9,12 +8,12 @@ class TelaPagamentos extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Pagamentos",
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF000000),
+            color: Color(0xFF000000),
           ),
         ),
         centerTitle: true,
@@ -36,21 +35,21 @@ class TelaPagamentos extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "Total pago este ano",
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 15,
-                      color: const Color(0xFF093030),
+                      color: Color(0xFF093030),
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
+                  const Text(
                     "R\$ 4.250,00",
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF000000),
+                      color: Color(0xFF000000),
                     ),
                   ),
                 ],
@@ -58,37 +57,35 @@ class TelaPagamentos extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 130), // separa os containers
+          const SizedBox(height: 130), // separa os containers
 
           Expanded(
-            // Container dos meses
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: const BoxDecoration(
                 color: Color(0xFFF1FFF3),
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60), //borda esquerda
-                  topRight: Radius.circular(60), //borda direita
+                  topLeft: Radius.circular(60),
+                  topRight: Radius.circular(60),
                 ),
               ),
 
-              //Janeiro
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: const [
                   SizedBox(height: 15),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10),
+                    padding: EdgeInsets.only(left: 10),
                     child: Text(
                       "Janeiro",
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w500, //w500 = Medium
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
-                  SizedBox(height: 20), // espaço
+                  SizedBox(height: 20),
                 ],
               ),
             ),
