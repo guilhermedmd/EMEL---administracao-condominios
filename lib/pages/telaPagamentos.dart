@@ -124,6 +124,57 @@ class TelaPagamentos extends StatelessWidget {
                     "R\$ 80,00",
                     Icons.local_fire_department,
                   ),
+                  const SizedBox(height: 30),
+
+                  // --- SEÇÃO FEVEREIRO ---
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      "Fevereiro",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  GastosMensais(
+                    "Condominio",
+                    "10:00 - Fev 28",
+                    "Mensal",
+                    "R\$ 850,00",
+                    Icons.home,
+                  ),
+
+                  GastosMensais(
+                    // Agua
+                    "Agua",
+                    "14:57 - Fev 2",
+                    "Mensal",
+                    "R\$ 122,00",
+                    Icons.water_drop,
+                  ),
+
+                  GastosMensais(
+                    // condominio
+                    "Energia",
+                    "14:59 - Fev 2",
+                    "Mensal",
+                    "R\$ 162,00",
+                    Icons.flash_on,
+                  ),
+
+                  GastosMensais(
+                    "Gás",
+                    "15:05 - Mar 2",
+                    "Mensal",
+                    "R\$ 80,00",
+                    Icons.local_fire_department,
+                  ),
+
+                  const SizedBox(
+                    height: 40,
+                  ), // Espaço no final para não ficar colado
                 ],
               ),
             ),
