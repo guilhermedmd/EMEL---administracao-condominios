@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:emel/widget/default_layout.dart';
+import 'package:emel/Controllers/help_controller.dart';
+
 
 class HelpPage extends StatelessWidget {
   HelpPage({super.key});
   final _formKey = GlobalKey<FormState>();
+  final controller = HelpController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class HelpPage extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(30),
           child: Form(
-            key: _formKey,
+            key: controller.formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -38,6 +41,8 @@ class HelpPage extends StatelessWidget {
 
                 // 3. Campo Nome
                 TextFormField(
+                  controller: controller.nomeController,
+                  validator: (v) => v!.isEmpty ? 'Erro' : null,
                   decoration: const InputDecoration(
                     labelText: 'Name',
                     border: OutlineInputBorder(),
@@ -47,6 +52,8 @@ class HelpPage extends StatelessWidget {
 
                 // 4. Campo Email
                 TextFormField(
+                  controller: controller.emailController,
+                  validator: (v) => v!.isEmpty ? 'Erro' : null,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
@@ -57,6 +64,8 @@ class HelpPage extends StatelessWidget {
 
                 // 5. Campo Dúvida (How can we help you?)
                 TextFormField(
+                  controller: controller.duvidaController,
+                  validator: (v) => v!.isEmpty ? 'Erro' : null,
                   maxLines: 4,
                   decoration: const InputDecoration(
                     labelText: 'How can we help you?',
@@ -72,7 +81,8 @@ class HelpPage extends StatelessWidget {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      print("Mensagem enviada!");
+                    controller.enviarMensagem();
+                    print("Mensagem enviada!");
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF00D09E),
