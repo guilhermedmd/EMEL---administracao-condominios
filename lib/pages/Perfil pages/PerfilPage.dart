@@ -2,6 +2,7 @@ import 'package:emel/pages/navegacao_page.dart';
 import 'package:emel/widget/ImgPerfil.dart';
 import 'package:emel/widget/default_layout.dart';
 import 'package:flutter/material.dart';
+import 'package:emel/pages/Perfil pages/help_page.dart';
 
 class PerfilPage extends StatelessWidget {
 
@@ -126,7 +127,7 @@ class PerfilPage extends StatelessWidget {
                         ),
 
                         // botao3
-                        Padding(
+Padding(
                           padding: EdgeInsets.only(top: 25),
                           child: Row(
                             children: [
@@ -164,46 +165,48 @@ class PerfilPage extends StatelessWidget {
                             ],
                           ),
                         ),
-
                         // Botão 4
-                        Padding(
-                          padding: EdgeInsets.only(top: 25),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 70,
-                                width: 70,
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF6DB6FE),
-                                    // shadowColor: Colors.transparent,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        20,
-                                      ), // aqui define o arredondamento
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.support_agent,
-                                    color: Colors.white,
-                                    size: 25,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 25),
-                                child: Text(
-                                  "Help",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+Padding(
+  padding: const EdgeInsets.only(top: 25),
+  child: Row(
+    children: [
+      SizedBox(
+        height: 70,
+        width: 70,
+        child: ElevatedButton(
+          onPressed: () {
+            // AQUI entra só a ação de navegar:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HelpPage()),
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF6DB6FE),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          child: const Icon(
+            Icons.support_agent,
+            color: Colors.white,
+            size: 25,
+          ),
+        ),
+      ),
+      const Padding(
+        padding: EdgeInsets.only(left: 25),
+        child: Text(
+          "Help",
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ],
+  ),
+),
                       ],
                     ),
                   ),

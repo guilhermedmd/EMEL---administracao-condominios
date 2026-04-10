@@ -1,4 +1,4 @@
-import 'package:emel/pages/PerfilPage.dart';
+import 'package:emel/pages/Perfil%20pages/PerfilPage.dart';
 import 'package:emel/pages/SplashPage.dart';
 import 'package:emel/pages/navegacao_page.dart';
 import 'package:emel/pages/telaPagamentos.dart';
@@ -17,5 +17,6 @@ void main() {
       textTheme: GoogleFonts.poppinsTextTheme(), 
     ),
     home: SplashPage(),
+    debugShowCheckedModeBanner: false,
   ));
 }
