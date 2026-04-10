@@ -122,7 +122,7 @@ class TelaPagamentos extends StatelessWidget {
                     "15:05 - Fev 2",
                     "Mensal",
                     "R\$ 80,00",
-                    Icons.home,
+                    Icons.local_fire_department,
                   ),
                 ],
               ),
