@@ -59,7 +59,7 @@ class TelaPagamentos extends StatelessWidget {
 
           const SizedBox(height: 130), // separa os containers
 
-          Expanded(
+          Expanded( // tela braca ..
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -71,7 +71,7 @@ class TelaPagamentos extends StatelessWidget {
                 ),
               ),
 
-              child: Column(
+              child: Column( // jreferente ao mes 
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   SizedBox(height: 15),
@@ -87,6 +87,7 @@ class TelaPagamentos extends StatelessWidget {
                   ),
                   SizedBox(height: 20),
                 ],
+                // informacoe ao mes..condominio, agua luz gaz
               ),
             ),
           ),
