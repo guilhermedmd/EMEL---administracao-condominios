@@ -1,4 +1,4 @@
-import 'package:emel/pages/PerfilPage.dart';
+import 'package:emel/pages/Perfil%20pages/PerfilPage.dart';
 import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/pages/telaPagamentos.dart';

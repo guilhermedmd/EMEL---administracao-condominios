@@ -45,7 +45,7 @@ class TelaPagamentos extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   const Text(
-                    "R\$ 4.250,00",
+                    "R\$ SemMundial",
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -60,6 +60,7 @@ class TelaPagamentos extends StatelessWidget {
           const SizedBox(height: 130), // separa os containers
 
           Expanded(
+            // tela braca ..
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -71,11 +72,11 @@ class TelaPagamentos extends StatelessWidget {
                 ),
               ),
 
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  SizedBox(height: 15),
-                  Padding(
+              child: ListView(
+                children: [
+                  const SizedBox(height: 15),
+
+                  const Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
                       "Janeiro",
@@ -85,8 +86,130 @@ class TelaPagamentos extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+
+                  const SizedBox(height: 20),
+
+                  GastosMensais(
+                    // condominio
+                    "Condominio",
+                    "20:22 - Jan 30",
+                    "Mensal",
+                    "R\$ 850,00",
+                    Icons.home,
+                  ),
+
+                  GastosMensais(
+                    // Agua
+                    "Agua",
+                    "14:57 - Fev 2",
+                    "Mensal",
+                    "R\$ 122,00",
+                    Icons.water_drop,
+                  ),
+
+                  GastosMensais(
+                    // condominio
+                    "Energia",
+                    "14:59 - Fev 2",
+                    "Mensal",
+                    "R\$ 162,00",
+                    Icons.flash_on,
+                  ),
+
+                  GastosMensais(
+                    // condominio
+                    "Gás",
+                    "15:05 - Fev 2",
+                    "Mensal",
+                    "R\$ 80,00",
+                    Icons.local_fire_department,
+                  ),
                 ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget GastosMensais(
+    String titulo,
+    String data,
+    String categoria,
+    String valor,
+    IconData icone,
+  ) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 15),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icone, color: Colors.white),
+          ),
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: Row(
+              children: [
+                // Nome + data
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        titulo,
+                        style: const TextStyle(
+                          color: Color(0xFF052224),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        data,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF0068FF),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // barra 1
+                Container(height: 30, width: 1, color: const Color(0xFF00D09E)),
+
+                // Categoria (mensal)
+                Expanded(
+                  flex: 3,
+                  child: Center(
+                    child: Text(
+                      categoria,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ),
+
+                // barra 2
+                Container(height: 30, width: 1, color: const Color(0xFF00D09E)),
+
+                const SizedBox(width: 25),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsets.only(right: 18),
+            child: Text(
+              valor,
+              style: TextStyle(
+                color: Color(0xFF052224),
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
