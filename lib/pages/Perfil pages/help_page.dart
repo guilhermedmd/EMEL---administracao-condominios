@@ -68,7 +68,7 @@ class HelpPage extends StatelessWidget {
                   validator: (v) => v!.isEmpty ? 'Erro' : null,
                   maxLines: 4,
                   decoration: const InputDecoration(
-                    labelText: 'How can we help you?',
+                    labelText: 'Envie seu dúvida e entraremos em contato',
                     border: OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
