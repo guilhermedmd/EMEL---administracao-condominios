@@ -377,7 +377,7 @@ class TelaComprovante extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00D09E),
+                  backgroundColor: Color(0xFF0068FF),
                 ),
                 onPressed: () => Navigator.pop(context),
                 child: const Text(
