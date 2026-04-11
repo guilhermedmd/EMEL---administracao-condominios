@@ -34,7 +34,7 @@ class HelpPage extends StatelessWidget {
 
                 // 2. O título do formulário (com "message" corrigido)
                 const Text(
-                  "Send a message to EMEL",
+                  "Fale com a EMEL:",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
@@ -88,7 +88,7 @@ class HelpPage extends StatelessWidget {
                       backgroundColor: const Color(0xFF00D09E),
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text("SEND"),
+                    child: const Text("Enviar"),
                   ),
                 ),
               ], // Aqui fecha o children da Column
