@@ -6,23 +6,22 @@ class FerramentasPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. PRIMEIRO declaramos os dados (Hardcoded para o RC4)
-    final List<Map<String, dynamic>> ferramentas = [
-      {'icon': Icons.build, 'label': 'Manutenção'},
-      {'icon': Icons.router, 'label': 'Redes'},
-      {'icon': Icons.fitness_center, 'label': 'Treino'},
-      {'icon': Icons.local_shipping, 'label': 'Caminhões'},
-      {'icon': Icons.payments, 'label': 'Contas'},
-      {'icon': Icons.history, 'label': 'Histórico'},
-      {'icon': Icons.settings, 'label': 'Ajustes'},
-      {'icon': Icons.groups, 'label': 'Comunidade'},
-      {'icon': Icons.help_outline, 'label': 'Suporte'},
-      {'icon': Icons.payments, 'label': 'Contas'},
-      {'icon': Icons.history, 'label': 'Histórico'},
+    //(Hardcoded RC4)
+final List<Map<String, dynamic>> ferramentas = [
+      {'icon': Icons.badge, 'label': 'Emissão Credenciais'},     
+      {'icon': Icons.person_add, 'label': 'Cadastro Visitante'}, 
+      {'icon': Icons.verified_user, 'label': 'Aprovação Visitas'},
+      {'icon': Icons.qr_code_scanner, 'label': 'QR CODE Entrada'},
+      {'icon': Icons.block, 'label': 'Cancelar Credencial'},  
+      {'icon': Icons.child_care, 'label': 'Carona -16'},        
+      {'icon': Icons.calendar_month, 'label': 'Reserva Área'},   
+      {'icon': Icons.manage_search, 'label': 'Histórico Entrada'},
+      {'icon': Icons.campaign, 'label': 'Notificação Morador'},   
+      {'icon': Icons.star_half, 'label': 'Avaliação Carona'},     
+      {'icon': Icons.history, 'label': 'Histórico'},              
       {'icon': Icons.settings, 'label': 'Ajustes'},
       {'icon': Icons.groups, 'label': 'Comunidade'},
     ];
-
     // 2. DEPOIS retornamos o Widget
     return Scaffold(
       appBar: AppBar(
