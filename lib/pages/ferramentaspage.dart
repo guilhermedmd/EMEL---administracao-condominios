@@ -67,7 +67,7 @@ class FerramentasPage extends StatelessWidget {
                             ),
                             child: Icon(
                               ferramentas[index]['icon'],
-                              color: const Color(0xFF00D09E), // Usei seu verde para combinar
+                            color: Colors.blue,
                               size: 40,
                             ),
                           ),
