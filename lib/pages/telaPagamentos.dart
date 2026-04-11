@@ -57,10 +57,9 @@ class TelaPagamentos extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 130), // separa os containers
+          const SizedBox(height: 20),
 
           Expanded(
-            // tela braca ..
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -75,7 +74,6 @@ class TelaPagamentos extends StatelessWidget {
               child: ListView(
                 children: [
                   const SizedBox(height: 15),
-
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
@@ -89,44 +87,42 @@ class TelaPagamentos extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
+                  // ALTERADO: Adicionado 'context' como primeiro item em todas as chamadas
                   GastosMensais(
-                    // condominio
+                    context,
                     "Condominio",
                     "20:22 - Jan 30",
                     "Mensal",
                     "R\$ 850,00",
                     Icons.home,
                   ),
-
                   GastosMensais(
-                    // Agua
+                    context,
                     "Agua",
                     "14:57 - Jan 2",
                     "Mensal",
                     "R\$ 122,00",
                     Icons.water_drop,
                   ),
-
                   GastosMensais(
-                    // condominio
+                    context,
                     "Energia",
                     "14:59 - Jan 2",
                     "Mensal",
                     "R\$ 162,00",
                     Icons.flash_on,
                   ),
-
                   GastosMensais(
-                    // condominio
+                    context,
                     "Gás",
                     "15:05 - Jan 2",
                     "Mensal",
                     "R\$ 80,00",
                     Icons.local_fire_department,
                   ),
+
                   const SizedBox(height: 30),
 
-                  // --- SEÇÃO FEVEREIRO ---
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
@@ -139,32 +135,31 @@ class TelaPagamentos extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
                   GastosMensais(
+                    context,
                     "Condominio",
                     "10:00 - Fev 28",
                     "Mensal",
                     "R\$ 850,00",
                     Icons.home,
                   ),
-
                   GastosMensais(
-                    // Agua
+                    context,
                     "Agua",
                     "14:57 - Fev 2",
                     "Mensal",
                     "R\$ 122,00",
                     Icons.water_drop,
                   ),
-
                   GastosMensais(
-                    // condominio
+                    context,
                     "Energia",
                     "14:59 - Fev 2",
                     "Mensal",
                     "R\$ 162,00",
                     Icons.flash_on,
                   ),
-
                   GastosMensais(
+                    context,
                     "Gás",
                     "15:05 - Fev 2",
                     "Mensal",
@@ -172,10 +167,8 @@ class TelaPagamentos extends StatelessWidget {
                     Icons.local_fire_department,
                   ),
 
-                  const SizedBox(
-                    height: 40,
-                  ), // Espaço no final para não ficar colado
-                  // --- SEÇÃO MARCO ---
+                  const SizedBox(height: 30),
+
                   const Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
@@ -188,32 +181,31 @@ class TelaPagamentos extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
                   GastosMensais(
+                    context,
                     "Condominio",
                     "10:00 - Mar 28",
                     "Mensal",
                     "R\$ 850,00",
                     Icons.home,
                   ),
-
                   GastosMensais(
-                    // Agua
+                    context,
                     "Agua",
                     "14:57 - Mar 2",
                     "Mensal",
                     "R\$ 122,00",
                     Icons.water_drop,
                   ),
-
                   GastosMensais(
-                    // condominio
+                    context,
                     "Energia",
                     "14:59 - Mar 2",
                     "Mensal",
                     "R\$ 162,00",
                     Icons.flash_on,
                   ),
-
                   GastosMensais(
+                    context,
                     "Gás",
                     "15:05 - Mar 2",
                     "Mensal",
@@ -221,9 +213,7 @@ class TelaPagamentos extends StatelessWidget {
                     Icons.local_fire_department,
                   ),
 
-                  const SizedBox(
-                    height: 40,
-                  ), // Espaço no final para não ficar colado
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -233,86 +223,183 @@ class TelaPagamentos extends StatelessWidget {
     );
   }
 
+  // ALTERADO: Adicionado 'BuildContext context' como primeiro parâmetro
   Widget GastosMensais(
+    BuildContext context,
     String titulo,
     String data,
     String categoria,
     String valor,
     IconData icone,
   ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icone, color: Colors.white),
+    // ALTERADO: Envolvido com InkWell para permitir o clique e navegação
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                TelaComprovante(titulo: titulo, valor: valor, data: data),
           ),
-          const SizedBox(width: 12),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 15),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icone, color: Colors.white),
+            ),
+            const SizedBox(width: 12),
 
-          Expanded(
-            child: Row(
-              children: [
-                // Nome + data
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        titulo,
-                        style: const TextStyle(
-                          color: Color(0xFF052224),
-                          fontWeight: FontWeight.bold,
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          titulo,
+                          style: const TextStyle(
+                            color: Color(0xFF052224),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      Text(
-                        data,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF0068FF),
+                        Text(
+                          data,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF0068FF),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // barra 1
-                Container(height: 30, width: 1, color: const Color(0xFF00D09E)),
-
-                // Categoria (mensal)
-                Expanded(
-                  flex: 3,
-                  child: Center(
-                    child: Text(
-                      categoria,
-                      style: const TextStyle(fontSize: 12),
+                      ],
                     ),
                   ),
-                ),
 
-                // barra 2
-                Container(height: 30, width: 1, color: const Color(0xFF00D09E)),
+                  Container(
+                    height: 30,
+                    width: 1,
+                    color: const Color(0xFF00D09E),
+                  ),
 
-                const SizedBox(width: 25),
-              ],
-            ),
-          ),
+                  Expanded(
+                    flex: 3,
+                    child: Center(
+                      child: Text(
+                        categoria,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ),
 
-          Padding(
-            padding: EdgeInsets.only(right: 18),
-            child: Text(
-              valor,
-              style: TextStyle(
-                color: Color(0xFF052224),
-                fontWeight: FontWeight.bold,
+                  Container(
+                    height: 30,
+                    width: 1,
+                    color: const Color(0xFF00D09E),
+                  ),
+
+                  const SizedBox(width: 25),
+                ],
               ),
             ),
-          ),
+
+            Padding(
+              padding: const EdgeInsets.only(right: 18),
+              child: Text(
+                valor,
+                style: const TextStyle(
+                  color: Color(0xFF052224),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- NOVA CLASSE: TELA DE COMPROVANTE ---
+class TelaComprovante extends StatelessWidget {
+  final String titulo;
+  final String valor;
+  final String data;
+
+  const TelaComprovante({
+    super.key,
+    required this.titulo,
+    required this.valor,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Comprovante", style: TextStyle(color: Colors.black)),
+        backgroundColor: const Color(0xFF00D09E),
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Icon(
+                Icons.check_circle,
+                color: Color(0xFF00D09E),
+                size: 80,
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Center(
+              child: Text(
+                "Pagamento Confirmado!",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const Divider(height: 40),
+            _linhaInfo("Serviço:", titulo),
+            _linhaInfo("Data:", data),
+            _linhaInfo("Valor:", valor),
+            _linhaInfo("Tipo:", "Mensal"),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00D09E),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text(
+                  "Voltar",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _linhaInfo(String label, String info) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+          Text(info, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
