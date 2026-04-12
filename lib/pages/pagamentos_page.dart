@@ -1,8 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-class TelaPagamentos extends StatelessWidget {
-  TelaPagamentos({super.key});
+class TelaPagamentos extends StatefulWidget {
+  const TelaPagamentos({super.key});
+
+  @override
+  State<TelaPagamentos> createState() => _TelaPagamentosState();
+}
+
+class _TelaPagamentosState extends State<TelaPagamentos> {
+  String? mesSelecionado;
+  String? tipoSelecionado;
 
   final List<Map<String, dynamic>> meses = [
     {
@@ -173,7 +181,92 @@ class TelaPagamentos extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 80),
+          const SizedBox(height: 10),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                // FILTRO DE MÊS
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: DropdownButton<String>(
+                      value: mesSelecionado,
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      hint: const Text("Mês"),
+                      items: const [
+                        DropdownMenuItem(value: "Todos", child: Text("Meses")),
+                        DropdownMenuItem(
+                          value: "Janeiro",
+                          child: Text("Janeiro"),
+                        ),
+                        DropdownMenuItem(
+                          value: "Fevereiro",
+                          child: Text("Fevereiro"),
+                        ),
+                        DropdownMenuItem(value: "Março", child: Text("Março")),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          mesSelecionado = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 10),
+
+                // FILTRO DE TIPO
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: DropdownButton<String>(
+                      value: tipoSelecionado,
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      hint: const Text("Tipo"),
+                      items: const [
+                        DropdownMenuItem(
+                          value: "Todos",
+                          child: Text("Tipo de gasto"),
+                        ),
+                        DropdownMenuItem(
+                          value: "Condominio",
+                          child: Text("Condomínio"),
+                        ),
+                        DropdownMenuItem(value: "Agua", child: Text("Água")),
+                        DropdownMenuItem(
+                          value: "Energia",
+                          child: Text("Energia"),
+                        ),
+                        DropdownMenuItem(value: "Gás", child: Text("Gás")),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          tipoSelecionado = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
 
           Expanded(
             child: Container(
