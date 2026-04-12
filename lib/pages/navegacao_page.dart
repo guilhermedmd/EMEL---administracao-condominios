@@ -16,7 +16,16 @@ class NavegacaoPage extends StatefulWidget {
 class _NavegacaoPageState extends State<NavegacaoPage> {
   int _indiceAtual = 0; // Começa no Perfil
 
+<<<<<<< HEAD
 
+=======
+  final List<Widget> _telas = [
+    const Center(child: Text("Home em breve")),
+    TelaPagamentos(),
+    const FerramentasPage(),
+          PerfilPage(), 
+  ];
+>>>>>>> 98f8c2acb0e3abf6968f33b270cb0ada08a0119d
 
   @override
   Widget build(BuildContext context) {
