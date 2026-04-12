@@ -1,5 +1,5 @@
 class Morador {
-  late String usuario, nome, password;
+  late String usuario, password;
  
   Morador(String usuario, String password){
     this.usuario = usuario;

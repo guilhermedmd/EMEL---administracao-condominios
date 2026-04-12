@@ -1,8 +1,6 @@
 import 'package:emel/pages/login_page.dart';
-import 'package:emel/pages/perfil%20pages/PerfilPage.dart';
-import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
-import 'package:emel/pages/telaPagamentos.dart';
+import 'package:emel/pages/pagamentos_page.dart';
 
 class InicialPage extends StatelessWidget {
   const InicialPage({super.key});

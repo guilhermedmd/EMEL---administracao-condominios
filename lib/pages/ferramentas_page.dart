@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:emel/widget/default_layout.dart';
+import 'package:emel/widgets/default_layout.dart';
 
 class FerramentasPage extends StatelessWidget {
   const FerramentasPage({super.key});
@@ -22,11 +22,10 @@ final List<Map<String, dynamic>> ferramentas = [
       {'icon': Icons.settings, 'label': 'Ajustes'},
       {'icon': Icons.groups, 'label': 'Comunidade'},
     ];
-    // 2. DEPOIS retornamos o Widget
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Ferramentas", // Corrigi de 'Pagamentos' para 'Ferramentas'
+          "Ferramentas", 
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -36,7 +35,9 @@ final List<Map<String, dynamic>> ferramentas = [
         centerTitle: true,
         backgroundColor: const Color(0xFF00D09E),
         elevation: 0,
+        automaticallyImplyLeading: false,
       ),
+      
       body: Defaultlayout(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -47,9 +48,9 @@ final List<Map<String, dynamic>> ferramentas = [
               Expanded(
                 child: GridView.builder(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, // 3 colunas como você pediu
+                    crossAxisCount: 3, 
                     crossAxisSpacing: 25,
-                    mainAxisSpacing: 10, // Aumentei um pouco para não sufocar o texto
+                    mainAxisSpacing: 10,
                     childAspectRatio: 0.8, 
                   ),
                   itemCount: ferramentas.length,

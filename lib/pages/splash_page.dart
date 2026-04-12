@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:emel/pages/InicialPage.dart';
+import 'package:emel/pages/inicial_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

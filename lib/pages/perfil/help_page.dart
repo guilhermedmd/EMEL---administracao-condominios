@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:emel/widget/default_layout.dart';
-import 'package:emel/Controllers/help_controller.dart';
+import 'package:emel/widgets/default_layout.dart';
+import 'package:emel/controllers/help_controller.dart';
 
 
 class HelpPage extends StatelessWidget {
@@ -24,7 +24,6 @@ class HelpPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. O texto descritivo que você queria
                 const Text(
                   "Este aplicativo foi desenvolvido para a gestão simplificada de condomínios, facilitando o acesso ao suporte.",
                   textAlign: TextAlign.center,
@@ -32,14 +31,12 @@ class HelpPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                // 2. O título do formulário (com "message" corrigido)
                 const Text(
                   "Fale com a EMEL:",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
 
-                // 3. Campo Nome
                 TextFormField(
                   controller: controller.nomeController,
                   validator: (v) => v!.isEmpty ? 'Erro' : null,
@@ -50,7 +47,6 @@ class HelpPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
 
-                // 4. Campo Email
                 TextFormField(
                   controller: controller.emailController,
                   validator: (v) => v!.isEmpty ? 'Erro' : null,
@@ -62,7 +58,6 @@ class HelpPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
 
-                // 5. Campo Dúvida (How can we help you?)
                 TextFormField(
                   controller: controller.duvidaController,
                   validator: (v) => v!.isEmpty ? 'Erro' : null,
@@ -75,7 +70,6 @@ class HelpPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 25),
 
-                // 6. Botão de Enviar
                 SizedBox(
                   width: double.infinity,
                   height: 50,

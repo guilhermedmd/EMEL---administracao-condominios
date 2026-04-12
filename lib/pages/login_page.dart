@@ -1,26 +1,13 @@
-import 'package:emel/Controllers/login_controller.dart';
+import 'package:emel/controllers/login_controller.dart';
 import 'package:emel/models/morador.dart';
 import 'package:emel/pages/navegacao_page.dart';
-import 'package:emel/widget/default_layout.dart';
+import 'package:emel/widgets/default_layout.dart';
+import 'package:emel/widgets/form_login.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
-   static TextEditingController usuarioController = TextEditingController(); 
-  final TextEditingController passwordController = TextEditingController();
   Widget build(BuildContext context) {
-    final laguraTela = MediaQuery.of(context).size.width;
-   
-
-    void login(TextEditingController usuario, TextEditingController password){
-      Morador? morador = LoginController.verificarUsuario(usuarioController, passwordController);
-      if(morador != null){
-        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage(nomeUsuario: morador.get_usuario)));
-      }else{
-        ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("ERRO: login inválido!"))
-        );
-      }
-    }
+  
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -34,130 +21,7 @@ class LoginPage extends StatelessWidget {
             ),
             Expanded(
               child: Defaultlayout(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: laguraTela * 0.30),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 30),
-                              child: SizedBox(
-                                width: laguraTela * 0.75,
-
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: (laguraTela * 0.75) * 0.55,
-                                      ),
-                                      child: Padding(padding: EdgeInsets.only(bottom: 10), child:Text("Nome de Usuário:",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold
-                                      ),), 
-                                      ),
-                                      
-                                    ),
-                                    TextField(
-                                      controller: usuarioController,
-                                       style: TextStyle(
-                                      color: Color(0xff0E3E3E)
-                                    ),
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            100,
-                                          ),
-                                          borderSide: BorderSide.none,
-                                        ),
-
-                                        fillColor: Color(0xFFDFF7E2),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(
-                              width: laguraTela * 0.75,
-
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: (laguraTela * 0.75) * 0.75,
-                                    ),
-                                    child: Padding(padding: EdgeInsets.only(bottom: 10), child: Text("Senha:",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold
-                                    ),),)
-                                  ),
-                                  TextField(
-                                    controller: passwordController,
-                                    obscureText: true,
-                                    style: TextStyle(
-                                      color: Color(0xff0E3E3E)
-                                    ),
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
-                                        borderSide: BorderSide.none,
-                                      ),
-
-                                      fillColor: Color(0xffdcf4e4),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      ElevatedButton(
-                        onPressed: () {
-                          login(usuarioController, passwordController);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF00D09E),
-                          foregroundColor: Colors.black,
-                           padding: EdgeInsets.symmetric(
-                          horizontal: 84,
-                          vertical: 24,
-                        )
-                        ), 
-                        child: Text("Log in",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold
-                        )
-                        ),
-                        ),
-                      Padding(padding: EdgeInsets.only(top: 20),
-                      child: TextButton(
-                        onPressed: () {},
-                        style: ButtonStyle(
-                          overlayColor: WidgetStateProperty.all(Colors.transparent),
-                          padding: WidgetStateProperty.all(EdgeInsets.zero),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text("Esqueceu sua senha?", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff0E3E3E)),),
-                      ),
-                      ),
-                      
-                    ],
-                  ),
-                ),
+                child: FormLogin()
               ),
             ),
           ],

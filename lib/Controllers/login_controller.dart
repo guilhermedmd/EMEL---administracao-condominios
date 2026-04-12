@@ -1,6 +1,5 @@
 import 'package:emel/mock/mock_usuario.dart';
 import 'package:emel/models/morador.dart';
-import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginController {

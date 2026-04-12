@@ -1,9 +1,7 @@
-import 'package:emel/pages/login_page.dart';
-import 'package:emel/pages/navegacao_page.dart';
-import 'package:emel/widget/ImgPerfil.dart';
-import 'package:emel/widget/default_layout.dart';
+import 'package:emel/widgets/img_perfil.dart';
+import 'package:emel/widgets/default_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:emel/pages/perfil%20pages/help_page.dart';
+import 'package:emel/pages/perfil/help_page.dart';
 
 class PerfilPage extends StatelessWidget {
   final String nomeUsuario;
@@ -16,7 +14,7 @@ class PerfilPage extends StatelessWidget {
           child: Text("Perfil", style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         backgroundColor: Colors.transparent,
-        automaticallyImplyLeading: false
+        automaticallyImplyLeading: false,
       ),
       floatingActionButton: FloatingActionButton.small(
         onPressed: () {
@@ -26,7 +24,7 @@ class PerfilPage extends StatelessWidget {
         child: Icon(Icons.logout),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      
+
       body: Defaultlayout(
         heightConst: 0.70,
         child: Stack(
@@ -129,7 +127,7 @@ class PerfilPage extends StatelessWidget {
                         ),
 
                         // botao3
-Padding(
+                        Padding(
                           padding: EdgeInsets.only(top: 25),
                           child: Row(
                             children: [
@@ -168,47 +166,48 @@ Padding(
                           ),
                         ),
                         // Botão 4
-Padding(
-  padding: const EdgeInsets.only(top: 25),
-  child: Row(
-    children: [
-      SizedBox(
-        height: 70,
-        width: 70,
-        child: ElevatedButton(
-          onPressed: () {
-            // AQUI entra só a ação de navegar:
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HelpPage()),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF6DB6FE),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          child: const Icon(
-            Icons.support_agent,
-            color: Colors.white,
-            size: 25,
-          ),
-        ),
-      ),
-      const Padding(
-        padding: EdgeInsets.only(left: 25),
-        child: Text(
-          "Help",
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    ],
-  ),
-),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 25),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                height: 70,
+                                width: 70,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => HelpPage(),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF6DB6FE),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.support_agent,
+                                    color: Colors.white,
+                                    size: 25,
+                                  ),
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 25),
+                                child: Text(
+                                  "Help",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),

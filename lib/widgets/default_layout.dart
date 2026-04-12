@@ -6,13 +6,13 @@ class Defaultlayout extends StatelessWidget {
   final Widget? floatingActionButton; 
 
   const Defaultlayout({
-    super.key, // Adicionei só isso aqui para o Flutter não reclamar
+    super.key,
     required this.child,
     this.heightConst,
     this.floatingActionButton,
   });
 
-  @override // Isso aqui é obrigatório
+  @override 
   Widget build(BuildContext context) {
     final alturaTela = MediaQuery.of(context).size.height;
     final larguraTela = MediaQuery.of(context).size.width;
