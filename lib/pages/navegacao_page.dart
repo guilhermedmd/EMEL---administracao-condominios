@@ -17,7 +17,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
 
   final List<Widget> _telas = [
     const Center(child: Text("Home em breve")),
-    const TelaPagamentos(),
+    TelaPagamentos(),
     const FerramentasPage(),
           PerfilPage(), 
   ];
