@@ -4,14 +4,12 @@ class Defaultlayout extends StatelessWidget {
   final Widget child;
   final double? heightConst;
   final Widget? floatingActionButton; 
-  final Widget? bottomNavigationBar;
 
   const Defaultlayout({
     super.key, // Adicionei só isso aqui para o Flutter não reclamar
     required this.child,
     this.heightConst,
     this.floatingActionButton,
-    this.bottomNavigationBar
   });
 
   @override // Isso aqui é obrigatório

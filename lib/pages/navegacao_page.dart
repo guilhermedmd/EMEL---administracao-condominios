@@ -1,10 +1,11 @@
 import 'package:emel/pages/ferramentaspage.dart';
 import 'package:flutter/material.dart';
-import 'package:emel/pages/Perfil%20pages/PerfilPage.dart';
+import 'package:emel/pages/perfil%20pages/PerfilPage.dart';
 import 'package:emel/pages/telaPagamentos.dart';
 
 class NavegacaoPage extends StatefulWidget {
-  const NavegacaoPage({super.key});
+  final String nomeUsuario;
+  const NavegacaoPage({super.key, required this.nomeUsuario});
 
   @override
   State<NavegacaoPage> createState() => _NavegacaoPageState();
@@ -15,15 +16,16 @@ class NavegacaoPage extends StatefulWidget {
 class _NavegacaoPageState extends State<NavegacaoPage> {
   int _indiceAtual = 0; // Começa no Perfil
 
-  final List<Widget> _telas = [
-    const Center(child: Text("Home em breve")),
-    const TelaPagamentos(),
-    const FerramentasPage(),
-          PerfilPage(), 
-  ];
+
 
   @override
   Widget build(BuildContext context) {
+      final List<Widget> _telas = [
+    const Center(child: Text("Home em breve")),
+    const TelaPagamentos(),
+    const FerramentasPage(),
+          PerfilPage(nomeUsuario: widget.nomeUsuario), 
+  ];
     return Scaffold(
       body: _telas[_indiceAtual], 
       

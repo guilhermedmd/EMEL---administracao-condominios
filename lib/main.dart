@@ -1,9 +1,4 @@
-import 'package:emel/pages/Perfil%20pages/PerfilPage.dart';
 import 'package:emel/pages/SplashPage.dart';
-import 'package:emel/pages/login_page.dart';
-import 'package:emel/pages/navegacao_page.dart';
-import 'package:emel/pages/telaPagamentos.dart';
-import 'package:emel/widget/default_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

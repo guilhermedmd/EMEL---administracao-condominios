@@ -1,11 +1,13 @@
+import 'package:emel/pages/login_page.dart';
 import 'package:emel/pages/navegacao_page.dart';
 import 'package:emel/widget/ImgPerfil.dart';
 import 'package:emel/widget/default_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:emel/pages/Perfil pages/help_page.dart';
+import 'package:emel/pages/perfil%20pages/help_page.dart';
 
 class PerfilPage extends StatelessWidget {
-
+  final String nomeUsuario;
+  const PerfilPage({super.key, required this.nomeUsuario});
   Widget build(BuildContext context) {
     final larguraTela = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -37,7 +39,7 @@ class PerfilPage extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    "Nome",
+                    nomeUsuario,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   Text("ID 000000", style: TextStyle(fontSize: 12)),

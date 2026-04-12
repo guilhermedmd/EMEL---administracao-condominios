@@ -1,4 +1,5 @@
-import 'package:emel/pages/Perfil%20pages/PerfilPage.dart';
+import 'package:emel/pages/login_page.dart';
+import 'package:emel/pages/perfil%20pages/PerfilPage.dart';
 import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/pages/telaPagamentos.dart';
@@ -54,7 +55,7 @@ class InicialPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => NavegacaoPage()),
+                      MaterialPageRoute(builder: (context) => LoginPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -100,14 +101,6 @@ class InicialPage extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
-
-              const Text(
-                'Forgot Password?',
-                style: TextStyle(
-                  fontSize: 12,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
             ],
           ),
         ),

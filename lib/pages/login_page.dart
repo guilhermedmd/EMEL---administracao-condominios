@@ -1,9 +1,26 @@
+import 'package:emel/Controllers/login_controller.dart';
+import 'package:emel/models/morador.dart';
+import 'package:emel/pages/navegacao_page.dart';
 import 'package:emel/widget/default_layout.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
+   static TextEditingController usuarioController = TextEditingController(); 
+  final TextEditingController passwordController = TextEditingController();
   Widget build(BuildContext context) {
     final laguraTela = MediaQuery.of(context).size.width;
+   
+
+    void login(TextEditingController usuario, TextEditingController password){
+      Morador? morador = LoginController.verificarUsuario(usuarioController, passwordController);
+      if(morador != null){
+        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage(nomeUsuario: morador.get_usuario)));
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("ERRO: login inválido!"))
+        );
+      }
+    }
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -46,6 +63,7 @@ class LoginPage extends StatelessWidget {
                                       
                                     ),
                                     TextField(
+                                      controller: usuarioController,
                                        style: TextStyle(
                                       color: Color(0xff0E3E3E)
                                     ),
@@ -82,6 +100,7 @@ class LoginPage extends StatelessWidget {
                                     ),),)
                                   ),
                                   TextField(
+                                    controller: passwordController,
                                     obscureText: true,
                                     style: TextStyle(
                                       color: Color(0xff0E3E3E)
@@ -106,7 +125,9 @@ class LoginPage extends StatelessWidget {
                       ),
 
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          login(usuarioController, passwordController);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF00D09E),
                           foregroundColor: Colors.black,
