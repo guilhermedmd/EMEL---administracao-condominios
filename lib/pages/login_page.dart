@@ -1,6 +1,3 @@
-import 'package:emel/controllers/login_controller.dart';
-import 'package:emel/models/morador.dart';
-import 'package:emel/pages/navegacao_page.dart';
 import 'package:emel/widgets/default_layout.dart';
 import 'package:emel/widgets/form_login.dart';
 import 'package:flutter/material.dart';

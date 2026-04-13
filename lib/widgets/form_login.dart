@@ -27,7 +27,7 @@ class FormLogin extends StatelessWidget{
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(bottom: laguraTela * 0.30),
+                        padding: EdgeInsets.only(bottom: laguraTela * 0.1),
                         child: Column(
                           children: [
                             Padding(
@@ -78,9 +78,9 @@ class FormLogin extends StatelessWidget{
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
-                                      right: (laguraTela * 0.75) * 0.75,
+                                      right: (laguraTela * 0.75) * 0.55,
                                     ),
-                                    child: Padding(padding: EdgeInsets.only(bottom: 10), child: Text("Senha:",
+                                    child: Padding(padding: EdgeInsets.only(bottom: 10), child: Text("Senha:                    ",
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold
