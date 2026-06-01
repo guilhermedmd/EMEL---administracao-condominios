@@ -4,21 +4,29 @@ import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
 
 class FormLogin extends StatelessWidget{
-  static TextEditingController usuarioController = TextEditingController(); 
-  final TextEditingController passwordController = TextEditingController();
+  static TextEditingController cpfController = TextEditingController(); 
+  final TextEditingController senhaController = TextEditingController();
 
   Widget build(BuildContext context){
     final laguraTela = MediaQuery.of(context).size.width;
 
-     void login(TextEditingController usuario, TextEditingController password){
-      Morador? morador = LoginController.verificarUsuario(usuarioController, passwordController);
-      if(morador != null){
-        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage(nomeUsuario: morador.get_usuario)));
+     Future<void> login(TextEditingController usuario, TextEditingController password)async{
+      print("ENTROU NO LOGIN");
+      try{
+        Morador? usuarioValido = await LoginController.verificarUsuario(cpfController, senhaController);
+      if(usuarioValido != null){
+        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage(nomeUsuario: usuarioValido.nome)));
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("ERRO: login inválido!"))
         );
       }
+      }catch(e, stackTrace) {
+    print("ERRO CAPTURADO:");
+    print(e);
+    print(stackTrace);
+    }
+      
     }
     
     return Center(
@@ -41,7 +49,7 @@ class FormLogin extends StatelessWidget{
                                       padding: EdgeInsets.only(
                                         right: (laguraTela * 0.75) * 0.55,
                                       ),
-                                      child: Padding(padding: EdgeInsets.only(bottom: 10), child:Text("Nome de Usuário:",
+                                      child: Padding(padding: EdgeInsets.only(bottom: 10), child:Text("CPF do Usuário:",
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold
@@ -50,7 +58,7 @@ class FormLogin extends StatelessWidget{
                                       
                                     ),
                                     TextField(
-                                      controller: usuarioController,
+                                      controller: cpfController,
                                        style: TextStyle(
                                       color: Color(0xff0E3E3E)
                                     ),
@@ -87,7 +95,7 @@ class FormLogin extends StatelessWidget{
                                     ),),)
                                   ),
                                   TextField(
-                                    controller: passwordController,
+                                    controller: senhaController,
                                     obscureText: true,
                                     style: TextStyle(
                                       color: Color(0xff0E3E3E)
@@ -112,8 +120,9 @@ class FormLogin extends StatelessWidget{
                       ),
 
                       ElevatedButton(
-                        onPressed: () {
-                          login(usuarioController, passwordController);
+                        onPressed: () async{
+                          print("BOTÃO CLICADO");
+                          await login(cpfController, senhaController);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF00D09E),
