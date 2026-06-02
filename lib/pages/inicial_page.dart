@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:emel/pages/login_page.dart';
-import 'package:emel/pages/pagamentos_page.dart';
+import 'package:emel/pages/historico_liberacoes.dart';
 
 // Stateless pois a tela é estática
 class InicialPage extends StatelessWidget {
@@ -83,7 +83,7 @@ class InicialPage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TelaPagamentos()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => TelaHistoricoLiberacoes()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFD4E2DB),

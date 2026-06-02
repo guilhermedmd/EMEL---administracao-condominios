@@ -1,7 +1,7 @@
 import 'package:emel/pages/ferramentas_page.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/pages/perfil/perfil_page.dart';
-import 'package:emel/pages/pagamentos_page.dart';
+import 'package:emel/pages/historico_liberacoes.dart';
 
 class NavegacaoPage extends StatefulWidget {
   final String nomeUsuario;
@@ -19,7 +19,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
   Widget build(BuildContext context) {
     final List<Widget> _telas = [
     Center(child: Text("Home em breve")),
-    TelaPagamentos(),
+    TelaHistoricoLiberacoes(),
     FerramentasPage(),
           PerfilPage(nomeUsuario: widget.nomeUsuario), 
   ];
