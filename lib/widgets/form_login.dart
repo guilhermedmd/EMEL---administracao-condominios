@@ -121,7 +121,6 @@ class FormLogin extends StatelessWidget{
 
                       ElevatedButton(
                         onPressed: () async{
-                          print("BOTÃO CLICADO");
                           await login(cpfController, senhaController);
                         },
                         style: ElevatedButton.styleFrom(

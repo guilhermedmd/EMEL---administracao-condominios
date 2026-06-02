@@ -21,7 +21,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
     Center(child: Text("Home em breve")),
     TelaPagamentos(),
     FerramentasPage(),
-          PerfilPage(nomeUsuario: widget.nomeUsuario), 
+          PerfilPage(), 
   ];
     return Scaffold(
       body: _telas[_indiceAtual], 

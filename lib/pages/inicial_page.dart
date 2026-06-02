@@ -19,6 +19,7 @@ class InicialPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 40,
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Padding(

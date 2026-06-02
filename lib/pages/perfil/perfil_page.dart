@@ -1,11 +1,15 @@
+import 'package:emel/pages/inicial_page.dart';
+import 'package:emel/repository/morador_repository.dart';
 import 'package:emel/widgets/img_perfil.dart';
 import 'package:emel/widgets/default_layout.dart';
+import 'package:emel/widgets/logout.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/pages/perfil/help_page.dart';
+import 'package:hive_ce_flutter/hive_ce_flutter.dart';
+import 'package:provider/provider.dart';
 
 class PerfilPage extends StatelessWidget {
-  final String nomeUsuario;
-  const PerfilPage({super.key, required this.nomeUsuario});
+  const PerfilPage({super.key});
   Widget build(BuildContext context) {
     final larguraTela = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -18,7 +22,7 @@ class PerfilPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.small(
         onPressed: () {
-          Navigator.pop(context);
+          Logout.mostrarLogout(context, "morador");
         },
         backgroundColor: Color(0xFFE3EDE8),
         child: Icon(Icons.logout),
@@ -36,9 +40,16 @@ class PerfilPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 50),
               child: Column(
                 children: [
-                  Text(
-                    nomeUsuario,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  Consumer<MoradorRepository>(
+                    builder: (context, repository, child) {
+                      return Text(
+                        repository.nomeUsuario,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      );
+                    },
                   ),
                   Text("ID 000000", style: TextStyle(fontSize: 12)),
                   SizedBox(
@@ -219,5 +230,84 @@ class PerfilPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // função para pop up de logout precisa estilizar a adicionar tudo aqui ainda
+  void _mostrarDialogoLogout(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        // Arredonda as bordas do pop-up
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: const Text(
+          'Finalizar Sessão',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0D3B36), // Cor escura do título
+          ),
+        ),
+        content: const Text(
+          'Quer mesmo finalizar a sessão?',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        actions: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Botão Sim (Principal)
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const InicialPage()),
+                  );
+                  
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF00D294), // Verde da imagem
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  elevation: 0,
+                ),
+                child: const Text('Sim', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              const SizedBox(height: 10),
+              // Botão Cancelar (Secundário)
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE2F6E9), // Verde bem clarinho
+                  foregroundColor: const Color(0xFF0D3B36), // Texto escuro
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  elevation: 0,
+                ),
+                child: const Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+  // Exemplo de função fake de logout
+  void _executarLogoutUsuario() {
+    Hive.box("usuario").delete("morador");
+    print("Usuário deslogado com sucesso!");
   }
 }
