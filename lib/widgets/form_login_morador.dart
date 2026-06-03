@@ -3,7 +3,7 @@ import 'package:emel/models/morador.dart';
 import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
 
-class FormLogin extends StatelessWidget{
+class FormLoginMorador extends StatelessWidget{
   static TextEditingController cpfController = TextEditingController(); 
   final TextEditingController senhaController = TextEditingController();
 

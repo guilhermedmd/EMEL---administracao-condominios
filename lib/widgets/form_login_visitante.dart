@@ -1,0 +1,158 @@
+import 'package:emel/controllers/login_controller.dart';
+import 'package:emel/models/morador.dart';
+import 'package:emel/pages/navegacao_page.dart';
+import 'package:flutter/material.dart';
+
+class FormLoginVisitante extends StatelessWidget{
+  static TextEditingController cpfController = TextEditingController(); 
+  final TextEditingController senhaController = TextEditingController();
+
+  Widget build(BuildContext context){
+    final laguraTela = MediaQuery.of(context).size.width;
+
+    //  Future<void> login(TextEditingController usuario, TextEditingController password)async{
+    //   print("ENTROU NO LOGIN");
+    //   try{
+    //     Morador? usuarioValido = await LoginController.verificarUsuario(cpfController, senhaController);
+    //   if(usuarioValido != null){
+    //     Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage(nomeUsuario: usuarioValido.nome)));
+    //   }else{
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text("ERRO: login inválido!"))
+    //     );
+    //   }
+    //   }catch(e, stackTrace) {
+    // print("ERRO CAPTURADO:");
+    // print(e);
+    // print(stackTrace);
+    // }
+      
+    // }
+    
+    return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: laguraTela * 0.1),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 30),
+                              child: SizedBox(
+                                width: laguraTela * 0.75,
+
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        right: (laguraTela * 0.75) * 0.55,
+                                      ),
+                                      child: Padding(padding: EdgeInsets.only(bottom: 10), child:Text("CPF do Usuário:",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold
+                                      ),), 
+                                      ),
+                                      
+                                    ),
+                                    TextField(
+                                      controller: cpfController,
+                                       style: TextStyle(
+                                      color: Color(0xff0E3E3E)
+                                    ),
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            100,
+                                          ),
+                                          borderSide: BorderSide.none,
+                                        ),
+
+                                        fillColor: Color(0xFFDFF7E2),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(
+                              width: laguraTela * 0.75,
+
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      right: (laguraTela * 0.75) * 0.55,
+                                    ),
+                                    child: Padding(padding: EdgeInsets.only(bottom: 10), child: Text("Senha:                    ",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold
+                                    ),),)
+                                  ),
+                                  TextField(
+                                    controller: senhaController,
+                                    obscureText: true,
+                                    style: TextStyle(
+                                      color: Color(0xff0E3E3E)
+                                    ),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          100,
+                                        ),
+                                        borderSide: BorderSide.none,
+                                      ),
+
+                                      fillColor: Color(0xffdcf4e4),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () async{
+                          // falta adaptar para o login do visitante tbm
+                          // await login(cpfController, senhaController);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF00D09E),
+                          foregroundColor: Colors.black,
+                           padding: EdgeInsets.symmetric(
+                          horizontal: 84,
+                          vertical: 24,
+                        )
+                        ), 
+                        child: Text("Log in",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold
+                        )
+                        ),
+                        ),
+                      Padding(padding: EdgeInsets.only(top: 20),
+                      child: TextButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          overlayColor: WidgetStateProperty.all(Colors.transparent),
+                          padding: WidgetStateProperty.all(EdgeInsets.zero),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text("Esqueceu sua senha?", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff0E3E3E)),),
+                      ),
+                      ),
+                      
+                    ],
+                  ),
+                );
+  }
+}

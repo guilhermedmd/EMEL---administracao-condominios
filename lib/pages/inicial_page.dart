@@ -1,5 +1,6 @@
+import 'package:emel/pages/login_visitante_page.dart';
 import 'package:flutter/material.dart';
-import 'package:emel/pages/login_page.dart';
+import 'package:emel/pages/login_morador_page.dart';
 import 'package:emel/pages/historico_liberacoes.dart';
 
 // Stateless pois a tela é estática
@@ -66,7 +67,7 @@ class InicialPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       // Navegação para a tela de login
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPageMorador()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF00D09E),
@@ -84,7 +85,7 @@ class InicialPage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TelaHistoricoLiberacoes()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => LoginVisitantePage()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFD4E2DB),
