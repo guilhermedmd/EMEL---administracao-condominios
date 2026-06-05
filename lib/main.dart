@@ -1,5 +1,3 @@
-import 'package:emel/pages/cadastro_visitante.dart';
-import 'package:emel/pages/inicial_page.dart';
 import 'package:emel/pages/splash_page.dart';
 import 'package:emel/repository/morador_repository.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,6 @@ void main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!
   );
-  // Teste de conexão com o supabase, pode manter comentado
   //  try {
 
   //   MoradorRepository moradorRepository =
@@ -48,7 +45,7 @@ void main() async {
         scaffoldBackgroundColor: const Color(0xFF00D09E),
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
-      home: InicialPage(),
+      home: SplashPage(),
     ),
   ),
 );

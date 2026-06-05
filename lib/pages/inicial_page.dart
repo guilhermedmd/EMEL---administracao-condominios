@@ -1,6 +1,8 @@
 import 'package:emel/pages/login_morador_page.dart';
 import 'package:emel/pages/login_visitante_page.dart';
 import 'package:flutter/material.dart';
+
+// Stateless pois a tela é estática
 class InicialPage extends StatelessWidget {
   const InicialPage({super.key});
 
@@ -15,7 +17,6 @@ class InicialPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 40,
-        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Padding(
@@ -71,7 +72,7 @@ class InicialPage extends StatelessWidget {
                     child: const Text(
                       'MORADOR',
                       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
+                    ),                
                   ),
                 ),
 

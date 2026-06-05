@@ -20,7 +20,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
   Widget build(BuildContext context) {
     final List<Widget> _telas = [
     Center(child: Text("Home em breve")),
-    TelaHistoricoLiberacoes(),
+    TelaPagamentos(),
     FerramentasPage(),
           PerfilPage(), 
   ];

@@ -17,7 +17,7 @@ class MoradorRepository extends ChangeNotifier{
       final usuarioBox = Hive.box("usuario");
       final response = await supabase.from("morador").select("id_morador, nome, senha, cpf, email").eq("cpf", cpfLogin).eq("senha", senhaLogin).maybeSingle();
       if (response == null) {
-          return null;
+      return null;
       }
      Morador morador = Morador.fromJson(response);
      usuarioBox.put("morador", response);
