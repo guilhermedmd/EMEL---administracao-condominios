@@ -6,10 +6,10 @@ class VisitanteRepository{
 
 final supabase = SupabaseConfig.client;
 
-Future<Visitante> loginVisitante(String cpfLogin, String senhaLogin) async{
+Future<Visitante?> loginVisitante(String cpfLogin, String senhaLogin) async{
   var response = await supabase.from("visitante").select("id_visitante, nome, cpf, email, senha" ).eq("cpf", cpfLogin).eq("senha", senhaLogin).maybeSingle();
   if(response == null){
-    throw Exception("ERRO: Visitante não encontrado");
+    return null;
   }
   Visitante visitante = Visitante.fromJson(response);
   return visitante;

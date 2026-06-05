@@ -2,7 +2,7 @@ import 'package:emel/widgets/default_layout.dart';
 import 'package:emel/widgets/form_login_morador.dart';
 import 'package:flutter/material.dart';
 
-class LoginPageMorador extends StatelessWidget {
+class LoginMoradorPage extends StatelessWidget {
   Widget build(BuildContext context) {
   
     return Scaffold(

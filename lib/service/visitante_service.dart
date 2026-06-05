@@ -5,8 +5,8 @@ class VisitanteService {
 
   VisitanteRepository visitanteRepository = VisitanteRepository();
 
-  Future<Visitante> validarLoginVisitante(String cpfLogin, String senhaLogin)async {
-    Visitante visitante = await visitanteRepository.loginVisitante(cpfLogin, senhaLogin);
+  Future<Visitante?> validarLoginVisitante(String cpfLogin, String senhaLogin)async {
+    Visitante? visitante = await visitanteRepository.loginVisitante(cpfLogin, senhaLogin);
     return visitante;
   }
 }

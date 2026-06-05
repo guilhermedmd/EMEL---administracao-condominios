@@ -1,7 +1,8 @@
 import 'package:emel/pages/ferramentas_page.dart';
+import 'package:emel/pages/historico_liberacoes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/pages/perfil/perfil_page.dart';
-import 'package:emel/pages/historico_liberacoes.dart';
+import 'package:emel/pages/pagamentos_page.dart';
 
 class NavegacaoPage extends StatefulWidget {
   const NavegacaoPage({super.key});

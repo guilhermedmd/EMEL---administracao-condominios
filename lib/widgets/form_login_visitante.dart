@@ -1,4 +1,3 @@
-import 'package:emel/controllers/login_controller.dart';
 import 'package:emel/controllers/visitante_controller.dart';
 import 'package:emel/models/morador.dart';
 import 'package:emel/models/visitante.dart';
