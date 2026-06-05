@@ -4,8 +4,7 @@ import 'package:emel/pages/perfil/perfil_page.dart';
 import 'package:emel/pages/historico_liberacoes.dart';
 
 class NavegacaoPage extends StatefulWidget {
-  final String nomeUsuario;
-  const NavegacaoPage({super.key, required this.nomeUsuario});
+  const NavegacaoPage({super.key});
 
   @override
   State<NavegacaoPage> createState() => _NavegacaoPageState();
@@ -13,6 +12,7 @@ class NavegacaoPage extends StatefulWidget {
 
 class _NavegacaoPageState extends State<NavegacaoPage> {
   int _indiceAtual = 0; // Começa no Perfil
+  static const corBotoes = 0xff031314;
 
 
   @override
@@ -26,28 +26,51 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
     return Scaffold(
       body: _telas[_indiceAtual], 
       
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _indiceAtual,
-        onTap: (index) {
-          setState(() {
-            _indiceAtual = index;
-          });
-        },
-        // --- AJUSTES DE HOVER E ESTILO ---
-        type: BottomNavigationBarType.fixed, // Garante que os ícones não se mexam
-        selectedItemColor: const Color(0xFF00D09E), // Verde EMEL quando clicado
-        unselectedItemColor: Colors.grey, // Cinza quando não clicado
-        showSelectedLabels: false, // Esconde o espaço da legenda
-        showUnselectedLabels: false,
-        iconSize: 28,
-        
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.payments), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.layers), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''), // Camadas (Ferramentas)
-        ],
-      ),
+      bottomNavigationBar: Padding(
+  padding: const EdgeInsets.all(0),
+  child: Container(
+    color: const Color(0xFFf4fcf4),
+    child: ClipRRect(
+    borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+    child: NavigationBar(
+      height: 80,
+      backgroundColor: const Color(0xFFDFF7E2),
+      indicatorColor: const Color(0xFF00D09E),
+      selectedIndex: _indiceAtual,
+      onDestinationSelected: (index) {
+        setState(() {
+          _indiceAtual = index;
+        });
+      },
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+      destinations: const [
+        NavigationDestination(
+          icon: Icon(Icons.home_outlined),
+          selectedIcon: Icon(Icons.home, color: Color(corBotoes),),
+          label: '',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.payments_outlined),
+          selectedIcon: Icon(Icons.payments, color: Color(corBotoes)),
+          label: '',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.layers_outlined),
+          selectedIcon: Icon(Icons.layers, color: Color(corBotoes)),
+          label: '',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.person_outline),
+          selectedIcon: Icon(Icons.person, color: Color(corBotoes)),
+          label: '',
+        ),
+      ],
+    ),
+  
+),
+  )
+    )
     );
   }
 }

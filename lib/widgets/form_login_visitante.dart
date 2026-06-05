@@ -1,33 +1,36 @@
 import 'package:emel/controllers/login_controller.dart';
+import 'package:emel/controllers/visitante_controller.dart';
 import 'package:emel/models/morador.dart';
+import 'package:emel/models/visitante.dart';
 import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
 
 class FormLoginVisitante extends StatelessWidget{
-  static TextEditingController cpfController = TextEditingController(); 
+  final TextEditingController cpfController = TextEditingController(); 
   final TextEditingController senhaController = TextEditingController();
+  final VisitanteController _visitanteController = VisitanteController();
 
   Widget build(BuildContext context){
     final laguraTela = MediaQuery.of(context).size.width;
 
-    //  Future<void> login(TextEditingController usuario, TextEditingController password)async{
-    //   print("ENTROU NO LOGIN");
-    //   try{
-    //     Morador? usuarioValido = await LoginController.verificarUsuario(cpfController, senhaController);
-    //   if(usuarioValido != null){
-    //     Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage(nomeUsuario: usuarioValido.nome)));
-    //   }else{
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text("ERRO: login inválido!"))
-    //     );
-    //   }
-    //   }catch(e, stackTrace) {
-    // print("ERRO CAPTURADO:");
-    // print(e);
-    // print(stackTrace);
-    // }
+     Future<void> login(TextEditingController cpf, TextEditingController senha)async{
+      print("ENTROU NO LOGIN");
+      try{
+        bool visitanteValido = await _visitanteController.login(cpfController.text, senhaController.text);
+      if(visitanteValido){
+        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage()));
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("ERRO: login inválido!"))
+        );
+      }
+      }catch(e, stackTrace) {
+    print("ERRO CAPTURADO:");
+    print(e);
+    print(stackTrace);
+    }
       
-    // }
+    }
     
     return Center(
                   child: Column(
@@ -122,7 +125,7 @@ class FormLoginVisitante extends StatelessWidget{
                       ElevatedButton(
                         onPressed: () async{
                           // falta adaptar para o login do visitante tbm
-                          // await login(cpfController, senhaController);
+                          await login(cpfController, senhaController);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF00D09E),
@@ -150,7 +153,17 @@ class FormLoginVisitante extends StatelessWidget{
                         child: Text("Esqueceu sua senha?", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff0E3E3E)),),
                       ),
                       ),
-                      
+                      Padding(padding: EdgeInsets.only(top: 20),
+                      child: TextButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          overlayColor: WidgetStateProperty.all(Colors.transparent),
+                          padding: WidgetStateProperty.all(EdgeInsets.zero),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text("Cadastre-se!", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff0E3E3E)),),
+                      ),
+                      ),
                     ],
                   ),
                 );

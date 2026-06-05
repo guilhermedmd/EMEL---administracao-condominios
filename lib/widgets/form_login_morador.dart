@@ -15,7 +15,7 @@ class FormLoginMorador extends StatelessWidget{
       try{
         Morador? usuarioValido = await LoginController.verificarUsuario(cpfController, senhaController);
       if(usuarioValido != null){
-        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage(nomeUsuario: usuarioValido.nome)));
+        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage()));
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("ERRO: login inválido!"))
@@ -149,7 +149,6 @@ class FormLoginMorador extends StatelessWidget{
                         child: Text("Esqueceu sua senha?", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff0E3E3E)),),
                       ),
                       ),
-                      
                     ],
                   ),
                 );

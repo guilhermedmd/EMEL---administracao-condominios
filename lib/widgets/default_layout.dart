@@ -24,7 +24,7 @@ class Defaultlayout extends StatelessWidget {
           height: alturaTela * (heightConst ?? 0.75),
           width: larguraTela,
           decoration: const BoxDecoration(
-            color: Color(0xFFf4fcf4), 
+            color: Color(0xffF1FFF3), 
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(80),
               topRight: Radius.circular(80),
