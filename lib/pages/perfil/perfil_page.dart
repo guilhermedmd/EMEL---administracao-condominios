@@ -1,5 +1,5 @@
 import 'package:emel/pages/inicial_page.dart';
-import 'package:emel/repository/morador_repository.dart';
+import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:emel/widgets/img_perfil.dart';
 import 'package:emel/widgets/default_layout.dart';
 import 'package:emel/widgets/logout.dart';
@@ -40,10 +40,10 @@ class PerfilPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 50),
               child: Column(
                 children: [
-                  Consumer<MoradorRepository>(
-                    builder: (context, repository, child) {
+                  Consumer<UsuarioSession>(
+                    builder: (context, usuarioSession, child) {
                       return Text(
-                        repository.nomeUsuario,
+                        usuarioSession.nomeUsuario,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,

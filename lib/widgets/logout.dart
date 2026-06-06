@@ -1,6 +1,6 @@
 import 'package:emel/pages/inicial_page.dart';
+import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_ce_flutter/hive_flutter.dart';
 
 class Logout {
   static void mostrarLogout(BuildContext context, String tipoUsuario) {
@@ -28,7 +28,7 @@ class Logout {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _executarLogout(tipoUsuario);
+                    UsuarioSession().logout();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (_) => const InicialPage()),
@@ -62,9 +62,5 @@ class Logout {
         );
       },
     );
-  }
-  static void _executarLogout(String tipoUsuario) {
-    Hive.box("usuario").delete(tipoUsuario);
-    print("Usuário deslogado com sucesso!");
   }
 }
