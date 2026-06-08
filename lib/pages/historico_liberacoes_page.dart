@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TelaHistoricoLiberacoes extends StatefulWidget {
   const TelaHistoricoLiberacoes({super.key});
@@ -9,44 +12,90 @@ class TelaHistoricoLiberacoes extends StatefulWidget {
 }
 
 class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
-  // Nova estrutura de dados baseada na imagem
-  final List<Map<String, dynamic>> liberacoes = [
-    {
-      "nome": "Alvarez Azevedo",
-      "data": "12:43 - Dezembro 13",
-      "categoria": "Visitante",
-      "status": "Entrada\nLiberada",
-      "icone": Icons.vpn_key_outlined,
-    },
-    {
-      "nome": "Entrega Shopee",
-      "data": "12:54 - Dezembro 12",
-      "categoria": "Encomenda",
-      "status": "Recebido\nNa Portaria",
-      "icone": Icons.card_giftcard,
-    },
-    {
-      "nome": "Motorista Luís",
-      "data": "7:15 - Agosto 10",
-      "categoria": "Carona\nAutorizada",
-      "status": "Entrada\nConcluída",
-      "icone": Icons.directions_bus_outlined,
-    },
-    {
-      "nome": "Carlos (Pintor)",
-      "data": "8:00 - Agosto 08",
-      "categoria": "Prestador",
-      "status": "Saída\nRegistrada",
-      "icone": Icons.confirmation_number_outlined,
-    },
-    {
-      "nome": "Stephen Curry",
-      "data": "19:30 - Agosto 05",
-      "categoria": "Visitante",
-      "status": "Entrada\nLiberada",
-      "icone": Icons.sports_basketball,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting('pt_BR', null);
+  }
+
+  Future<List<Map<String, dynamic>>> _buscarHistorico() async {
+    try {
+      final supabase = Supabase.instance.client;
+
+      // Chamar a tabela como: 'historico_liberacoes'
+      final response = await supabase
+          .from('historico_liberacoes')
+          .select()
+          .order('created_at', ascending: false);
+
+      List<Map<String, dynamic>> listaFormatada = response.map((item) {
+        return {
+          "nome": item['nome'] ?? 'Desconhecido',
+          "data": _formatarData(item['created_at']),
+          "categoria": item['categoria'] ?? 'Outros',
+          "status": item['status'] ?? 'Pendente',
+          "icone": _obterIconePorCategoria(item['categoria']),
+        };
+      }).toList();
+
+      return listaFormatada;
+    } catch (e) {
+      // Como a tabela não existe ainda, vai cair neste erro
+
+      // Retornando dados para não ficar vazia
+      debugPrint('Tabela não encontrada, retornando dados falsos: $e');
+
+      return [
+        {
+          "nome": "Alvarez Azevedo",
+          "data": "12:43 - Dezembro 13",
+          "categoria": "Visitante",
+          "status": "Entrada\nLiberada",
+          "icone": Icons.vpn_key_outlined,
+        },
+        {
+          "nome": "Entrega Shopee",
+          "data": "12:54 - Dezembro 12",
+          "categoria": "Encomenda",
+          "status": "Recebido\nNa Portaria",
+          "icone": Icons.card_giftcard,
+        },
+      ];
+    }
+  }
+
+  // Função para formatar a data que vem do banco
+  String _formatarData(String? dataBanco) {
+    if (dataBanco == null) return '';
+    try {
+      DateTime data = DateTime.parse(dataBanco);
+      // Formata para: "12:43 - Dezembro 13"
+      String hora = DateFormat('HH:mm').format(data);
+      String mesDia = DateFormat('MMMM dd', 'pt_BR').format(data);
+      // Capitaliza a primeira letra do mês
+      mesDia = mesDia[0].toUpperCase() + mesDia.substring(1);
+      return "$hora - $mesDia";
+    } catch (e) {
+      return '';
+    }
+  }
+
+  IconData _obterIconePorCategoria(String? categoria) {
+    switch (categoria?.toLowerCase()) {
+      case 'visitante':
+        return Icons.vpn_key_outlined;
+      case 'encomenda':
+      case 'entrega':
+        return Icons.card_giftcard;
+      case 'carona autorizada':
+      case 'carona':
+        return Icons.directions_bus_outlined;
+      case 'prestador':
+        return Icons.confirmation_number_outlined;
+      default:
+        return Icons.info_outline;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,16 +236,47 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
 
                   // Lista de Liberações
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: liberacoes.length,
-                      itemBuilder: (context, index) {
-                        final item = liberacoes[index];
-                        return _itemLiberacao(
-                          nome: item["nome"],
-                          data: item["data"],
-                          categoria: item["categoria"],
-                          status: item["status"],
-                          icone: item["icone"],
+                    child: FutureBuilder<List<Map<String, dynamic>>>(
+                      future: _buscarHistorico(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF00D09E),
+                            ),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return const Center(
+                            child: Text(
+                              "Erro ao carregar o histórico.",
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          );
+                        }
+
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(
+                            child: Text("Nenhuma liberação encontrada."),
+                          );
+                        }
+
+                        final listaHistorico = snapshot.data!;
+
+                        return ListView.builder(
+                          itemCount: listaHistorico.length,
+                          itemBuilder: (context, index) {
+                            final item = listaHistorico[index];
+                            return _itemLiberacao(
+                              nome: item["nome"],
+                              data: item["data"],
+                              categoria: item["categoria"],
+                              status: item["status"],
+                              icone: item["icone"],
+                            );
+                          },
                         );
                       },
                     ),
