@@ -15,4 +15,8 @@ Future<Visitante?> loginVisitante(String cpfLogin, String senhaLogin) async{
   return visitante;
 }
 
+Future<void> cadastrarVisitante(Visitante visitante) async{
+  await supabase.from("visitante").insert(visitante);
+}
+
 }

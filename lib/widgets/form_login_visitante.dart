@@ -1,6 +1,7 @@
 import 'package:emel/controllers/visitante_controller.dart';
 import 'package:emel/models/morador.dart';
 import 'package:emel/models/visitante.dart';
+import 'package:emel/pages/cadastro_visitante.dart';
 import 'package:emel/pages/navegacao_page.dart';
 import 'package:flutter/material.dart';
 
@@ -154,7 +155,9 @@ class FormLoginVisitante extends StatelessWidget{
                       ),
                       Padding(padding: EdgeInsets.only(top: 20),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroVisitantePage()));
+                        },
                         style: ButtonStyle(
                           overlayColor: WidgetStateProperty.all(Colors.transparent),
                           padding: WidgetStateProperty.all(EdgeInsets.zero),

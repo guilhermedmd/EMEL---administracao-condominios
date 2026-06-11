@@ -11,4 +11,9 @@ class VisitanteController {
     }
     return false;
   }
+
+  Future<void> cadastrarVisitante(String nome, String cpf, String email, String senha, DateTime dataNasc) async{
+    Visitante visitante = Visitante.banco(nome, cpf, email, senha, dataNasc);
+    await visitanteService.cadastrarVisitante(visitante);
+  }
 }

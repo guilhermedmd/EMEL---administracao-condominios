@@ -9,4 +9,8 @@ class VisitanteService {
     Visitante? visitante = await visitanteRepository.loginVisitante(cpfLogin, senhaLogin);
     return visitante;
   }
+
+  Future<void> cadastrarVisitante(Visitante visitante) async{
+    await visitanteRepository.cadastrarVisitante(visitante);
+  }
 }

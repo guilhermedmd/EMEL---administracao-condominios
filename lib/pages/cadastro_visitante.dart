@@ -1,7 +1,9 @@
+import 'package:emel/controllers/visitante_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/widgets/default_layout.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// Está com as partes estranhas do supabase removidas
 class CadastroVisitantePage extends StatefulWidget {
   const CadastroVisitantePage({super.key});
 
@@ -13,8 +15,10 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
   final _nomeController = TextEditingController();
   final _cpfController = TextEditingController();
   final _senhaController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _dataNascimentoController = TextEditingController();
+
   DateTime? _dataNascimento;
-  bool _carregando = false;
 
   Future<void> _selecionarData() async {
     final picked = await showDatePicker(
@@ -23,38 +27,54 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    if (picked != null) setState(() => _dataNascimento = picked);
+
+    if (picked != null) {
+      setState(() {
+        _dataNascimento = picked;
+
+        _dataNascimentoController.text =
+            "${picked.day.toString().padLeft(2, '0')}/"
+            "${picked.month.toString().padLeft(2, '0')}/"
+            "${picked.year}";
+      });
+    }
   }
 
-  Future<void> _registrar() async {
-    setState(() => _carregando = true);
+  Future<void> cadastrarVisitante() async {
     try {
-      final auth = await Supabase.instance.client.auth.signUp(
-        email: "${_cpfController.text.trim()}@visitante.com",
-        password: _senhaController.text.trim(),
+      if (_dataNascimento == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Selecione a data de nascimento')),
+        );
+        return;
+      }
+
+      await VisitanteController().cadastrarVisitante(
+        _nomeController.text,
+        _cpfController.text,
+        _emailController.text,
+        _senhaController.text,
+        _dataNascimento!,
       );
 
-      await Supabase.instance.client.from('visitante').insert({
-        'id_visitante': auth.user!.id,
-        'nome': _nomeController.text.trim(),
-        'cpf': _cpfController.text.trim(),
-        'data_nasc': _dataNascimento?.toIso8601String(),
-        'senha': _senhaController.text.trim(),
+      _nomeController.clear();
+      _cpfController.clear();
+      _emailController.clear();
+      _senhaController.clear();
+      _dataNascimentoController.clear();
+
+      setState(() {
+        _dataNascimento = null;
       });
-      if (mounted) Navigator.pop(context);
+
+      print("Cadastro realizado");
     } catch (e) {
-      if (mounted)
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Erro: $e')));
-    } finally {
-      if (mounted) setState(() => _carregando = false);
+      print("ERRO: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Estilo que define o visual arredondado e colorido dos campos
     final inputDecoration = InputDecoration(
       filled: true,
       fillColor: const Color(0xFFD4E2DB),
@@ -74,7 +94,6 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Ícone de voltar e Título
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
@@ -97,7 +116,6 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                 ),
               ),
             ),
-            // Área Branca com o Formulário
             Expanded(
               child: Defaultlayout(
                 child: Padding(
@@ -114,7 +132,9 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                           hintText: 'Digite o nome do visitante',
                         ),
                       ),
+
                       const SizedBox(height: 20),
+
                       InkWell(
                         onTap: _selecionarData,
                         child: Container(
@@ -130,9 +150,11 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                _dataNascimento == null
-                                    ? 'Selecione a data'
-                                    : _dataNascimento.toString().split(' ')[0],
+                                _dataNascimentoController.text == ""
+                                    ? 'Selecione a data de nascimento'
+                                    : _dataNascimentoController.text
+                                          .toString()
+                                          .split(' ')[0],
                                 style: const TextStyle(color: Colors.black54),
                               ),
                               const Icon(
@@ -143,7 +165,9 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 20),
+
                       TextFormField(
                         controller: _cpfController,
                         decoration: inputDecoration.copyWith(
@@ -151,7 +175,19 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                           hintText: 'Digite o CPF',
                         ),
                       ),
+
                       const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: inputDecoration.copyWith(
+                          labelText: 'E-mail',
+                          hintText: 'Digite seu e-mail',
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
                       TextFormField(
                         controller: _senhaController,
                         decoration: inputDecoration.copyWith(
@@ -160,7 +196,9 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                         ),
                         obscureText: true,
                       ),
+
                       const SizedBox(height: 40),
+
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF00D09E),
@@ -169,16 +207,14 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        onPressed: _carregando ? null : _registrar,
-                        child: _carregando
-                            ? const CircularProgressIndicator()
-                            : const Text(
-                                "Registrar",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
+                        onPressed: () async {
+                          // implementar depois
+                          await cadastrarVisitante();
+                        },
+                        child: const Text(
+                          "Registrar",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                       ),
                     ],
                   ),
