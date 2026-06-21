@@ -1,12 +1,16 @@
 import 'package:emel/controllers/morador_controller.dart';
+import 'package:emel/controllers/notificacaoController.dart';
 import 'package:emel/models/morador.dart';
 import 'package:emel/pages/navegacao_page.dart';
+import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FormLoginMorador extends StatelessWidget{
   final TextEditingController cpfController = TextEditingController(); 
   final TextEditingController senhaController = TextEditingController();
   final MoradorController _moradorController = MoradorController();
+  final Notificacaocontroller _notificacaocontroller = Notificacaocontroller();
 
   Widget build(BuildContext context){
     final laguraTela = MediaQuery.of(context).size.width;
@@ -14,8 +18,11 @@ class FormLoginMorador extends StatelessWidget{
      Future<void> login(TextEditingController usuario, TextEditingController password)async{
       print("ENTROU NO LOGIN");
       try{
-        bool usuarioValido = await _moradorController.verificarUsuario(cpfController, senhaController);
+        final usuarioValido = await _moradorController.verificarUsuario(cpfController, senhaController);
       if(usuarioValido){
+        UsuarioSession session = context.read<UsuarioSession>();
+        int idMorador = session.idMorador;
+        _notificacaocontroller.salvarNotificacoesRecentes(idMorador);
         Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage()));
       }else{
         ScaffoldMessenger.of(context).showSnackBar(

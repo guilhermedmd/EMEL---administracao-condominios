@@ -1,4 +1,3 @@
-import 'package:emel/models/visitante.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_ce/hive_ce.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,9 +24,18 @@ class UsuarioSession extends ChangeNotifier{
 
     return usuario["nome"];
   }
+  int get idMorador{
+    final usuario =
+        usuarioBox.get("user");
+    if (usuario == null) {
+      throw Exception("Não há id do morador");
+    }
 
-  void logout(){
-    usuarioBox.clear();
+    return usuario["id_morador"];
+  }
+
+  Future<void> logoutUserSession()async{
+    await usuarioBox.clear();
     notifyListeners();
   }
 

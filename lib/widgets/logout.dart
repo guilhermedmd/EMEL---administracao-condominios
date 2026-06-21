@@ -1,4 +1,5 @@
 import 'package:emel/pages/inicial_page.dart';
+import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
 
@@ -27,8 +28,9 @@ class Logout {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    UsuarioSession().logout();
+                  onPressed: () async{
+                    await UsuarioSession().logoutUserSession();
+                    await NotificacaoSession().logoutNotifSession();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (_) => const InicialPage()),

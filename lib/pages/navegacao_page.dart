@@ -1,5 +1,6 @@
 import 'package:emel/pages/ferramentas_page.dart';
 import 'package:emel/pages/historico_liberacoes_page.dart';
+import 'package:emel/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/pages/perfil/perfil_page.dart';
 import 'package:emel/pages/pagamentos_page.dart';
@@ -19,7 +20,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _telas = [
-    Center(child: Text("Home em breve")),
+    HomePage(),
     TelaHistoricoLiberacoes(),
     FerramentasPage(),
           PerfilPage(), 
@@ -34,7 +35,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
     child: ClipRRect(
     borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40)),
     child: NavigationBar(
-      height: 80,
+      height: 65,
       backgroundColor: const Color(0xFFDFF7E2),
       indicatorColor: const Color(0xFF00D09E),
       selectedIndex: _indiceAtual,

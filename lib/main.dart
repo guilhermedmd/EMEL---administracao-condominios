@@ -1,7 +1,10 @@
 import 'package:emel/pages/cadastro_visitante.dart';
+import 'package:emel/pages/home.dart';
 import 'package:emel/pages/splash_page.dart';
 import 'package:emel/repository/morador_repository.dart';
+import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
+import 'package:emel/teste.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('usuario');
+  await Hive.openBox("notificacoes");
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
@@ -40,6 +44,9 @@ void main() async {
     providers: [
       ChangeNotifierProvider(
         create: (_) => UsuarioSession(),
+      ),      
+      ChangeNotifierProvider(
+        create: (_) => NotificacaoSession(),
       ),
     ],
     child: MaterialApp(
