@@ -5,8 +5,10 @@ import 'package:emel/pages/notificacao.dart';
 import 'package:emel/pages/perfil/perfil_page.dart';
 import 'package:emel/pages/splash_page.dart';
 import 'package:emel/repository/morador_repository.dart';
+import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
+import 'package:emel/teste.dart';
 // import 'package:emel/teste.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,6 +26,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('usuario');
   await Hive.openBox("notificacoes");
+  await Hive.openBox("moradia");
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
@@ -47,50 +50,6 @@ void main() async {
 
   // }
 
-
-// Teste GET - Ian
-// VisitanteController visitanteController = VisitanteController();
-//  try {
-//   List visitantes = await visitanteController.listarVisitantes();
-
-//    print("Quantidade de visitantes: ${visitantes.length}");
-
-//   for (var visitante in visitantes) {
-//      print("Nome: ${visitante.nome}");
-//      print("CPF: ${visitante.cpf}");
-//      print("----------------");
-//    }
-
-//  } catch(e) {
-//    print("ERRO AO BUSCAR VISITANTES:");
-//    print(e);
-//  }
-
-
-// Teste POST - Ian (OBS: USAR "Visitante" ou "Prestado de serviçosr")
-
-// try {
-
-//  print("COMEÇANDO TESTE DE VISITA");
-//  VisitaController visitaController = VisitaController();
-
-//  await visitaController.cadastrarVisita(
-//   DateTime.now(),
-//    null,
-//    "Teste de cadastro de visita",
-//    "Visitante",
-//    1,
-//    1
-//  );
-//  print("Visita cadastrada com sucesso!");
-
-//} catch(e){
-
-//  print("Erro ao cadastrar visita:");
-//  print(e);
-
-//}
-
   runApp(
   MultiProvider(
     providers: [
@@ -99,6 +58,9 @@ void main() async {
       ),      
       ChangeNotifierProvider(
         create: (_) => NotificacaoSession(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => MoradiaSession(),
       ),
     ],
     child: MaterialApp(

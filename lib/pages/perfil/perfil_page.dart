@@ -1,4 +1,5 @@
 import 'package:emel/pages/inicial_page.dart';
+import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:emel/widgets/img_perfil.dart';
 import 'package:emel/widgets/default_layout.dart';
@@ -51,7 +52,11 @@ class PerfilPage extends StatelessWidget {
                       );
                     },
                   ),
-                  Text("ID 000000", style: TextStyle(fontSize: 12)),
+                  Consumer<MoradiaSession>(
+                    builder: (context, moradiaSession, child) {
+                      return Text("${moradiaSession.getBloco}, n° ${moradiaSession.getNumero}",style: TextStyle(fontSize: 15));
+                    }
+                  ),
                   SizedBox(
                     width: larguraTela * 0.75,
                     child: Column(

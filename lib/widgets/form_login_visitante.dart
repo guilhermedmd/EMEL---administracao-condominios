@@ -3,6 +3,7 @@ import 'package:emel/models/morador.dart';
 import 'package:emel/models/visitante.dart';
 import 'package:emel/pages/cadastro_visitante.dart';
 import 'package:emel/pages/navegacao_page.dart';
+import 'package:emel/pages/visitante/navegacao_page_visitante.dart';
 import 'package:flutter/material.dart';
 
 class FormLoginVisitante extends StatelessWidget{
@@ -18,7 +19,7 @@ class FormLoginVisitante extends StatelessWidget{
       try{
         bool visitanteValido = await _visitanteController.login(cpfController.text, senhaController.text);
       if(visitanteValido){
-        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage()));
+        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPageVisitante()));
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("ERRO: login inválido!"))

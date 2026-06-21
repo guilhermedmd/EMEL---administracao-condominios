@@ -1,7 +1,9 @@
+import 'package:emel/controllers/moradia_controller.dart';
 import 'package:emel/controllers/morador_controller.dart';
 import 'package:emel/controllers/notificacaoController.dart';
 import 'package:emel/models/morador.dart';
 import 'package:emel/pages/navegacao_page.dart';
+import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +13,7 @@ class FormLoginMorador extends StatelessWidget{
   final TextEditingController senhaController = TextEditingController();
   final MoradorController _moradorController = MoradorController();
   final Notificacaocontroller _notificacaocontroller = Notificacaocontroller();
+  final MoradiaController _moradiaController = MoradiaController();
 
   Widget build(BuildContext context){
     final laguraTela = MediaQuery.of(context).size.width;
@@ -20,9 +23,11 @@ class FormLoginMorador extends StatelessWidget{
       try{
         final usuarioValido = await _moradorController.verificarUsuario(cpfController, senhaController);
       if(usuarioValido){
-        UsuarioSession session = context.read<UsuarioSession>();
-        int idMorador = session.idMorador;
+        UsuarioSession sessionUsuario = context.read<UsuarioSession>();
+        int idMorador = sessionUsuario.idMorador;
+        int idMoradiaFk = sessionUsuario.idMoradorFk;
         _notificacaocontroller.salvarNotificacoesRecentes(idMorador);
+        _moradiaController.salvarMoradiaInfo(idMoradiaFk);
         Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPage()));
       }else{
         ScaffoldMessenger.of(context).showSnackBar(

@@ -1,16 +1,13 @@
-import 'package:emel/sessionRepository/notificacao_session.dart';
-import 'package:emel/widgets/notificacao_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:emel/sessionRepository/usuario_session.dart';
-import 'package:emel/widgets/default_layout.dart';
-import 'package:emel/pages/notificacao.dart';
 
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:emel/sessionRepository/moradia_session.dart';
+import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:emel/widgets/default_layout.dart';
+import 'package:emel/widgets/notificacao_card.dart';
 import 'package:emel/pages/notificacao.dart';
+// Certifique-se de importar os seus painters (HouseIconPainter, HandKeyIconPainter) aqui
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -57,45 +54,51 @@ class HomePage extends StatelessWidget {
       ),
       body: Defaultlayout(
         heightConst: 0.85,
-        // 1. Trocamos o SingleChildScrollView externo por um Padding
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Greeting and House Card Row (FIXO)
+              // Greeting and House Card Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                    Consumer<UsuarioSession>(
-                      builder: (context, session, child) {
-                        final String nome = session.nomeUsuario.isNotEmpty
-                            ? session.nomeUsuario
-                            : "Usuário";
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Olá,",
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF0E3E3E),
-                              ),
+                  Consumer<UsuarioSession>(
+                    builder: (context, session, child) {
+                      String nome = "Carregando...";
+                      // Tenta buscar o nome. Se der erro de Hive vazio, mantém "Carregando..."
+                      try {
+                        if (session.nomeUsuario.isNotEmpty) {
+                          nome = session.nomeUsuario;
+                        }
+                      } catch (e) {
+                        nome = "...";
+                      }
+                      
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Olá,",
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF0E3E3E),
                             ),
-                            Text(
-                              nome,
-                              style: const TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF00D09E),
-                              ),
+                          ),
+                          Text(
+                            nome,
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF00D09E),
                             ),
-                          ],
-                        );
-                      },
-                    ),
-                  SizedBox(width: MediaQuery.of(context).size.width *0.2),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.2),
                   Container(
                     width: 130,
                     height: 130,
@@ -108,17 +111,41 @@ class HomePage extends StatelessWidget {
                       children: [
                         CustomPaint(
                           size: const Size(60, 50),
-                          painter: HouseIconPainter(),
+                          painter: HouseIconPainter(), // Descomente quando usar no seu app
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          "CASA X",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
-                            letterSpacing: 1.0,
-                          ),
+                        Consumer<MoradiaSession>(
+                          builder: (context, moradiaSession, child) {
+                            try {
+                              final bloco = moradiaSession.getBloco;
+                              final numero = moradiaSession.getNumero;
+
+                              if (bloco.isEmpty || bloco == "-") {
+                                return const SizedBox(
+                                  width: 15, height: 15,
+                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                );
+                              }
+
+                              return Center(
+                                child: Text(
+                                  "$bloco, n° $numero",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 11,
+                                    letterSpacing: 1.0,
+                                  ),
+                                ),
+                              );
+                            } catch (e) {
+                              // Se der o erro de Exception do Hive, mostra a bolinha rodando
+                              return const SizedBox(
+                                width: 15, height: 15,
+                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                              );
+                            }
+                          },
                         ),
                       ],
                     ),
@@ -127,7 +154,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 28),
 
-              // Action Buttons Container (FIXO)
+              // Action Buttons Container
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 decoration: BoxDecoration(
@@ -194,7 +221,7 @@ class HomePage extends StatelessWidget {
                             padding: const EdgeInsets.all(16.0),
                             child: CustomPaint(
                               size: const Size(38, 38),
-                              painter: HandKeyIconPainter(),
+                              painter: HandKeyIconPainter(), // Descomente quando usar
                             ),
                           ),
                         ),
@@ -215,7 +242,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 28),
 
-              // Title "Ultimas Notificações:" (FIXO)
+              // Title "Ultimas Notificações:"
               const Text(
                 "Ultimas Notificações:",
                 style: TextStyle(
@@ -226,7 +253,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
 
-              // 2. Colocamos as notificações em um Expanded + SingleChildScrollView
+              // Notificações List
               Expanded(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -234,30 +261,61 @@ class HomePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Consumer<NotificacaoSession>(
-              builder: (context, notificacaoSession, child) {
-          final lista = notificacaoSession.pegarNotificacoes;
-                      if (lista.isEmpty) {
-            return Center(child: Text("Nenhuma notificação por enquanto."));
-          }
-          return ListView.builder(
-    physics: const BouncingScrollPhysics(),
-    shrinkWrap: true, // Adicione se estiver direto na Column sem Expanded por fora do Consumer
-    itemCount: lista.length,
-    itemBuilder: (context, index) {
-      final notificacao = lista[index];
-      return NotificacaoCard.card(context, notificacao["titulo"], notificacao["data_horario"]);
-    },
-  );
-          }
+                        builder: (context, notificacaoSession, child) {
+                          try {
+                            final lista = notificacaoSession.pegarNotificacoes;
+                            
+                            if (lista.isEmpty) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                child: Center(
+                                  child: Text(
+                                    "Nenhuma notificação por enquanto.",
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                ),
+                              );
+                            }
+                            
+                            return ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(), // Evita conflito com o SingleChildScrollView de fora
+                              shrinkWrap: true,
+                              itemCount: lista.length,
+                              itemBuilder: (context, index) {
+                                final notificacao = lista[index];
+                                return NotificacaoCard.card(
+                                  context, 
+                                  notificacao["titulo"], 
+                                  notificacao["data_horario"]
+                                );
+                              },
+                            );
+                          } catch (e) {
+                            // Se a classe disparar um erro porque ainda não há dados
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 30.0),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFF00D09E),
+                                ),
+                              ),
+                            );
+                          }
+                        },
                       ),
-                      // Aqui entra o listView.builder
                       
                       // "Ver Todas" Button
+                      const SizedBox(height: 20),
                       Center(
                         child: SizedBox(
                           width: 200,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(builder: (context) => const NotificacaoPage())
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF00D09E),
                               shape: RoundedRectangleBorder(
