@@ -1,3 +1,4 @@
+import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/widgets/notificacao_card.dart';
 import 'package:flutter/material.dart';
@@ -111,15 +112,20 @@ class HomePage extends StatelessWidget {
                           painter: HouseIconPainter(),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          "CASA X",
-                          style: TextStyle(
+                        Consumer<MoradiaSession>(
+                    builder: (context, moradiaSession, child) {
+                      return Center(
+                        child: Text("${moradiaSession.getBloco}, n° ${moradiaSession.getNumero}",
+                      style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 11,
                             letterSpacing: 1.0,
                           ),
-                        ),
+                      )
+                      );
+                    }
+                  ),
                       ],
                     ),
                   ),
@@ -257,7 +263,9 @@ class HomePage extends StatelessWidget {
                         child: SizedBox(
                           width: 200,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => NotificacaoPage()));
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF00D09E),
                               shape: RoundedRectangleBorder(

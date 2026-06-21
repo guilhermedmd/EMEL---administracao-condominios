@@ -1,4 +1,5 @@
 import 'package:emel/pages/inicial_page.dart';
+import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ class Logout {
                   onPressed: () async{
                     await UsuarioSession().logoutUserSession();
                     await NotificacaoSession().logoutNotifSession();
+                    await MoradiaSession().logoutMoradiaSession();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (_) => const InicialPage()),

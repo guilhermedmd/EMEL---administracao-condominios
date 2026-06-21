@@ -5,8 +5,10 @@ import 'package:emel/pages/notificacao.dart';
 import 'package:emel/pages/perfil/perfil_page.dart';
 import 'package:emel/pages/splash_page.dart';
 import 'package:emel/repository/morador_repository.dart';
+import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
+import 'package:emel/teste.dart';
 // import 'package:emel/teste.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -24,6 +26,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('usuario');
   await Hive.openBox("notificacoes");
+  await Hive.openBox("moradia");
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
@@ -99,6 +102,9 @@ void main() async {
       ),      
       ChangeNotifierProvider(
         create: (_) => NotificacaoSession(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => MoradiaSession(),
       ),
     ],
     child: MaterialApp(
