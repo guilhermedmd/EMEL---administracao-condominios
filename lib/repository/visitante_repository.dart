@@ -19,4 +19,12 @@ Future<void> cadastrarVisitante(Visitante visitante) async{
   await supabase.from("visitante").insert(visitante);
 }
 
+Future<List<Visitante>> listarVisitantes() async {
+  final response = await supabase.from("visitante").select("id_visitante, nome, cpf, email, senha");
+
+  return response
+      .map<Visitante>((json) => Visitante.fromJson(json))
+      .toList();
+}
+
 }

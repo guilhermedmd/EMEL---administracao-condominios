@@ -16,4 +16,9 @@ class VisitanteController {
     Visitante visitante = Visitante.banco(nome, cpf, email, senha, dataNasc);
     await visitanteService.cadastrarVisitante(visitante);
   }
+
+  Future<List<Visitante>> listarVisitantes() async {
+    return await visitanteService.listarVisitantes();
+  }
+  
 }

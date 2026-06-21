@@ -13,6 +13,9 @@ import 'package:hive_ce_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:emel/Controllers/visitante_controller.dart';
+import 'package:emel/Controllers/visita_controller.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -23,6 +26,7 @@ void main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!
   );
+  
   //  try {
 
   //   MoradorRepository moradorRepository =
@@ -39,6 +43,51 @@ void main() async {
   //   print(e);
 
   // }
+
+
+// Teste GET - Ian
+// VisitanteController visitanteController = VisitanteController();
+//  try {
+//   List visitantes = await visitanteController.listarVisitantes();
+
+//    print("Quantidade de visitantes: ${visitantes.length}");
+
+//   for (var visitante in visitantes) {
+//      print("Nome: ${visitante.nome}");
+//      print("CPF: ${visitante.cpf}");
+//      print("----------------");
+//    }
+
+//  } catch(e) {
+//    print("ERRO AO BUSCAR VISITANTES:");
+//    print(e);
+//  }
+
+
+// Teste POST - Ian 
+
+//try {
+
+//  print("COMEÇANDO TESTE DE VISITA");
+//  VisitaController visitaController = VisitaController();
+
+//  await visitaController.cadastrarVisita(
+//    DateTime.now(),
+//    null,
+//    "Teste de cadastro de visita",
+//    "Social",
+//    1,
+//    1
+//  );
+//  print("Visita cadastrada com sucesso!");
+
+//} catch(e){
+
+//  print("Erro ao cadastrar visita:");
+//  print(e);
+
+//}
+
   runApp(
   MultiProvider(
     providers: [

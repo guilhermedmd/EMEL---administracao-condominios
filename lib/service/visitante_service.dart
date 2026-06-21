@@ -13,4 +13,9 @@ class VisitanteService {
   Future<void> cadastrarVisitante(Visitante visitante) async{
     await visitanteRepository.cadastrarVisitante(visitante);
   }
+
+  Future<List<Visitante>> listarVisitantes() async {
+    return await visitanteRepository.listarVisitantes();
+  }
+  
 }

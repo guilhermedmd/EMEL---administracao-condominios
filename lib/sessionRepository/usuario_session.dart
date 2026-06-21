@@ -15,12 +15,12 @@ class UsuarioSession extends ChangeNotifier{
     notifyListeners();
   }
 
-   String get nomeUsuario{
-    final usuario =
-        usuarioBox.get("user");
-    if (usuario == null) {
-      return "";
-    }
+  String get nomeUsuario{
+  final usuario =
+      usuarioBox.get("user");
+  if (usuario == null) {
+    return "";
+  }
 
     return usuario["nome"];
   }
@@ -36,9 +36,21 @@ class UsuarioSession extends ChangeNotifier{
 
   Future<void> logoutUserSession()async{
     await usuarioBox.clear();
+  int get idMorador {
+  final usuario = usuarioBox.get("user");
+
+  if(usuario == null){
+    return 0;
+  }
+    return usuario["id_morador"];
+  }
+
+  void logout(){
+    usuarioBox.clear();
     notifyListeners();
   }
 
   // prováveis gets para o endereço, 
   //no caso a moradia do usuario deverão ser feitos
+}
 }
