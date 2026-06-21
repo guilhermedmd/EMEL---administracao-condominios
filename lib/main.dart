@@ -1,5 +1,8 @@
+import 'package:emel/models/notificacao.dart';
 import 'package:emel/pages/cadastro_visitante.dart';
 import 'package:emel/pages/home.dart';
+import 'package:emel/pages/notificacao.dart';
+import 'package:emel/pages/perfil/perfil_page.dart';
 import 'package:emel/pages/splash_page.dart';
 import 'package:emel/repository/morador_repository.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
@@ -103,7 +106,7 @@ void main() async {
         scaffoldBackgroundColor: const Color(0xFF00D09E),
         textTheme: GoogleFonts.poppinsTextTheme(),
       ),
-      home: SplashPage(),
+      home: SplashPage()
     ),
   ),
 );

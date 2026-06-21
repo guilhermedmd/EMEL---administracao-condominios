@@ -31,9 +31,10 @@ class HomePage extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 15),
+            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.065),
             child: CircleAvatar(
               backgroundColor: Colors.white,
               radius: 18,
@@ -44,10 +45,10 @@ class HomePage extends StatelessWidget {
                   color: Color(0xFF052224),
                 ),
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (_) => const NotificacaoPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const NotificacaoPage()),
+                  );
                 },
               ),
             ),
@@ -128,7 +129,7 @@ class HomePage extends StatelessWidget {
 
               // Action Buttons Container (FIXO)
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE5F6EC),
                   borderRadius: BorderRadius.circular(24),

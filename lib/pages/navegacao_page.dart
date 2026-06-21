@@ -33,7 +33,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
   child: Container(
     color: const Color(0xFFf4fcf4),
     child: ClipRRect(
-    borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40)),
+    borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(80)),
     child: NavigationBar(
       height: 65,
       backgroundColor: const Color(0xFFDFF7E2),
