@@ -47,50 +47,6 @@ void main() async {
 
   // }
 
-
-// Teste GET - Ian
-// VisitanteController visitanteController = VisitanteController();
-//  try {
-//   List visitantes = await visitanteController.listarVisitantes();
-
-//    print("Quantidade de visitantes: ${visitantes.length}");
-
-//   for (var visitante in visitantes) {
-//      print("Nome: ${visitante.nome}");
-//      print("CPF: ${visitante.cpf}");
-//      print("----------------");
-//    }
-
-//  } catch(e) {
-//    print("ERRO AO BUSCAR VISITANTES:");
-//    print(e);
-//  }
-
-
-// Teste POST - Ian (OBS: USAR "Visitante" ou "Prestado de serviçosr")
-
-// try {
-
-//  print("COMEÇANDO TESTE DE VISITA");
-//  VisitaController visitaController = VisitaController();
-
-//  await visitaController.cadastrarVisita(
-//   DateTime.now(),
-//    null,
-//    "Teste de cadastro de visita",
-//    "Visitante",
-//    1,
-//    1
-//  );
-//  print("Visita cadastrada com sucesso!");
-
-//} catch(e){
-
-//  print("Erro ao cadastrar visita:");
-//  print(e);
-
-//}
-
   runApp(
   MultiProvider(
     providers: [
