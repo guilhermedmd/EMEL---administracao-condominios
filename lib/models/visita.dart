@@ -4,7 +4,7 @@ class Visita {
   DateTime? dataHoraSaida;
   String? observacao;
   String tipo;
-  int idMorador;
+  int idMorador; // id_morador_fk
 
   Visita(
     this.idVisita,
