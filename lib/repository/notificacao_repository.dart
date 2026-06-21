@@ -6,12 +6,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class NotificacaoRepository {
   final supabase = SupabaseConfig.client;
 
-  Future<void> notificacoesRecentes(int idmorador)async{
-    var notificacoes = await supabase.from("notificacao").select("titulo, descricao, lida, data_horario, tipo")
-    .eq("id_morador_fk", idmorador)
-    .order("data_horario", ascending: false).limit(4);
-    
-    if(notificacoes.isEmpty ){
+  Future<void> notificacoesRecentes(int idmorador) async {
+    var notificacoes = await supabase
+        .from("notificacao")
+        .select("titulo, descricao, lida, data_horario, tipo")
+        .eq("id_morador_fk", idmorador)
+        .order("data_horario", ascending: false)
+        .limit(4);
+
+    if (notificacoes.isEmpty) {
       throw Exception("Notiifcações não encontradas");
     }
     NotificacaoSession().salvarNotificacoes(notificacoes);
@@ -20,13 +23,27 @@ class NotificacaoRepository {
     // print("$chave: $valor");
     // });
     // print(notificacoes);
-    }
+  }
 
+  Future<List<Map<String, dynamic>>> getNotificacoes(int idmorador) async {
+    // Pega todas as notificações ordenando da mais recente para a mais antiga, ou seja decrescente,
+    // pois ascending é false
+    var notificacoes = await supabase
+        .from("notificacao")
+        .select("titulo, descricao, lida, data_horario, tipo")
+        .eq("id_morador_fk", idmorador)
+        .order("data_horario", ascending: false);
+    return notificacoes;
+  }
 
-Future<List<Map<String, dynamic>>> getNotificacoes(int idmorador)async{
-  // Pega todas as notificações ordenando da mais recente para a mais antiga, ou seja decrescente, 
-  // pois ascending é false
-  var notificacoes = await supabase.from("notificacao").select("titulo, descricao, lida, data_horario, tipo").eq("id_morador_fk", idmorador).order("data_horario", ascending: false);
-  return notificacoes;
+  Future<int> buscarQtdEntregas(int idMorador) async {
+    final response = await supabase
+        .from("notificacao")
+        .select("id_notificacao") // Apenas selecione o campo, sem FetchOptions
+        .eq("id_morador_fk", idMorador)
+        .eq("tipo", "entrega")
+        .count(CountOption.exact); // A contagem acontece aqui
+
+    return (response.count ?? 0).toInt();
   }
 }

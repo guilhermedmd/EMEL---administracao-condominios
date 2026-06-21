@@ -22,45 +22,28 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
     try {
       final supabase = Supabase.instance.client;
 
-      // Chamar a tabela como: 'historico_liberacoes'
+      // 1. Mudamos para .select('*') para evitar erros de relacionamento agora
       final response = await supabase
-          .from('historico_liberacoes')
-          .select()
-          .order('created_at', ascending: false);
+          .from('visita')
+          .select('*')
+          .order('data_hora_entrada', ascending: false);
 
-      List<Map<String, dynamic>> listaFormatada = response.map((item) {
+      final List<dynamic> data = response as List<dynamic>;
+
+      // 2. Substitua o mapa antigo por este novo:
+      return data.map((item) {
         return {
-          "nome": item['nome'] ?? 'Desconhecido',
-          "data": _formatarData(item['created_at']),
-          "categoria": item['categoria'] ?? 'Outros',
-          "status": item['status'] ?? 'Pendente',
-          "icone": _obterIconePorCategoria(item['categoria']),
+          // Aqui usamos o ID (chave estrangeira) pois o nome do visitante ainda não veio
+          "nome": "Visitante ID: ${item['id_visitante_fk'] ?? 'Sem ID'}",
+          "data": _formatarData(item['data_hora_entrada']),
+          "categoria": item['tipo'] ?? 'Outros',
+          "status": 'Concluído',
+          "icone": _obterIconePorCategoria(item['tipo']),
         };
       }).toList();
-
-      return listaFormatada;
     } catch (e) {
-      // Como a tabela não existe ainda, vai cair neste erro
-
-      // Retornando dados para não ficar vazia
-      debugPrint('Tabela não encontrada, retornando dados falsos: $e');
-
-      return [
-        {
-          "nome": "Alvarez Azevedo",
-          "data": "12:43 - Dezembro 13",
-          "categoria": "Visitante",
-          "status": "Entrada\nLiberada",
-          "icone": Icons.vpn_key_outlined,
-        },
-        {
-          "nome": "Entrega Shopee",
-          "data": "12:54 - Dezembro 12",
-          "categoria": "Encomenda",
-          "status": "Recebido\nNa Portaria",
-          "icone": Icons.card_giftcard,
-        },
-      ];
+      debugPrint('Erro ao buscar dados: $e');
+      return [];
     }
   }
 
