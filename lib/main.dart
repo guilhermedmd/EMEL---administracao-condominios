@@ -7,7 +7,7 @@ import 'package:emel/pages/splash_page.dart';
 import 'package:emel/repository/morador_repository.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
-import 'package:emel/teste.dart';
+// import 'package:emel/teste.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -67,18 +67,18 @@ void main() async {
 //  }
 
 
-// Teste POST - Ian 
+// Teste POST - Ian (OBS: USAR "Visitante" ou "Prestado de serviçosr")
 
-//try {
+// try {
 
 //  print("COMEÇANDO TESTE DE VISITA");
 //  VisitaController visitaController = VisitaController();
 
 //  await visitaController.cadastrarVisita(
-//    DateTime.now(),
+//   DateTime.now(),
 //    null,
 //    "Teste de cadastro de visita",
-//    "Social",
+//    "Visitante",
 //    1,
 //    1
 //  );
