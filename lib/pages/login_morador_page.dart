@@ -12,7 +12,7 @@ class LoginMoradorPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 40.0),
               child: Text(
-                "Bem Vindo Morador!",
+                "Bem-Vindo Morador!",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
             ),

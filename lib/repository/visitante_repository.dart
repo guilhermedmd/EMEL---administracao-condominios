@@ -40,4 +40,17 @@ class VisitanteRepository {
 
   return (response.count ?? 0); 
 }
+
+Future<Visitante?> buscarPorCpf(String cpfBusca) async {
+    var response = await supabase
+        .from("visitante")
+        .select("*")
+        .eq("cpf", cpfBusca)
+        .maybeSingle();
+
+    if (response == null) {
+      return null; // Visitante não existe no banco
+    }
+    return Visitante.fromJson(response); // Retorna o visitante com o ID preenchido
+  }
 }

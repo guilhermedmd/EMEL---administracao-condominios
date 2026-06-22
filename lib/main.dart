@@ -8,7 +8,6 @@ import 'package:emel/repository/morador_repository.dart';
 import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
-import 'package:emel/teste.dart';
 // import 'package:emel/teste.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

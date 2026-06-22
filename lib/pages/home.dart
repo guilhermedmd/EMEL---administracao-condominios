@@ -7,6 +7,7 @@ import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:emel/widgets/default_layout.dart';
 import 'package:emel/widgets/notificacao_card.dart';
 import 'package:emel/pages/notificacao.dart';
+import 'package:emel/pages/cadastro_visita_page.dart';
 // Certifique-se de importar os seus painters (HouseIconPainter, HandKeyIconPainter) aqui
 
 class HomePage extends StatelessWidget {
@@ -164,43 +165,50 @@ class HomePage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    GestureDetector(
-                      // onTap: () {...},
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 70,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.06),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.add,
-                              color: Color(0xFF00D09E),
-                              size: 36,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            "Agendar\nVisita",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF0E3E3E),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+               GestureDetector(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CadastroVisitaPage(),
+      ),
+    );
+  },
+  child: Column(
+    children: [
+      Container(
+        width: 70,
+        height: 70,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: const Icon(
+          Icons.add,
+          color: Color(0xFF00D09E),
+          size: 36,
+        ),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        "Agendar\nVisita",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Color(0xFF0E3E3E),
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
+      ),
+    ],
+  ),
+),
                     Column(
                       children: [
                         Container(

@@ -52,6 +52,8 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
     }
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     // Estilo que define o visual arredondado e colorido dos campos

@@ -13,7 +13,7 @@ class LoginVisitantePage extends StatelessWidget{
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 40.0),
               child: Text(
-                "Bem Vindo Visitante!",
+                "Bem-Vindo Visitante!",
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
             ),
