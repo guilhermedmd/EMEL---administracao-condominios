@@ -35,7 +35,7 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
     carregarDados();
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -67,100 +67,91 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
               ),
               const SizedBox(height: 20),
               Consumer<UsuarioSession>(
-                    builder: (context, usuarioSession, child) {
-                      return Text(
-                        usuarioSession.nomeUsuario,
-                        style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF052224),
-                )
-                      );
-                    },
-                  ),
+                builder: (context, usuarioSession, child) {
+                  return Text(
+                    usuarioSession.nomeUsuario,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF052224),
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 10),
               const Text(
                 "Seja bem-vindo(a)",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
 
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE3EDE8),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Alinha o ícone no topo se a lista crescer
-                  children: [
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min, // Faz a coluna interna ocupar o mínimo de espaço vertical
-                        children: [
-                          const SizedBox(height: 10), // Pequeno espaçamento abaixo do título
-                          
-                          if (isLoading)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 10.0),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
-                          else if (listaVistas.isEmpty)
-                            const Text(
-                              "Você não possui convites ativos no momento.",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black54,
-                              ),
-                            )
-                          else
-                            // IMPLEMENTAÇÃO DO SCROLL LOCALIZADO:
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(
-                                maxHeight: 220, // Altura máxima que a lista pode atingir dentro do card antes de rolar
-                              ),
-                              child: Scrollbar( // Opcional: Adiciona uma barra de rolagem visualmente útil
-                                thumbVisibility: true, // Deixa a barra sempre visível ao rolar
-                                child: ListView.builder(
-                                  shrinkWrap: true, // Ocupa apenas o tamanho dos itens existentes
-                                  physics: const BouncingScrollPhysics(), // Modificado aqui: permite o scroll apenas nesta lista
-                                  itemCount: listaVistas.length,
-                                  itemBuilder: (context, index) {
-                                    final item = listaVistas[index];
-                                    final dadosVisita = item["visita"];
+              // Mudança principal: Envolver o Container em um Expanded
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE3EDE8),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ), 
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isLoading)
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 20.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      else if (listaVistas.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 10.0),
+                          child: Text(
+                            "Você não possui convites ativos no momento.",
+                            style: TextStyle(fontSize: 14, color: Colors.black54),
+                          ),
+                        )
+                      else
+                        Expanded(
+                          child: Scrollbar(
+                            thumbVisibility: true,
+                            child: ListView.builder(
+                              padding: const EdgeInsets.only(top: 10), // Respiro superior
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: listaVistas.length,
+                              itemBuilder: (context, index) {
+                                final item = listaVistas[index];
+                                final dadosVisita = item["visita"];
 
-                                    if (dadosVisita == null) {
-                                      return const SizedBox();
-                                    }
+                                if (dadosVisita == null) {
+                                  return const SizedBox();
+                                }
 
-                                    final morador = dadosVisita["morador"];
-                                    final nomeMorador = morador != null
-                                        ? morador["nome"]
-                                        : "Não informado";
+                                final morador = dadosVisita["morador"];
+                                final nomeMorador = morador != null
+                                    ? morador["nome"]
+                                    : "Não informado";
 
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 8.0, right: 8.0), // Margem entre os cards internos
-                                      child: VisitaAgendaCard().cardVisita(
-                                        nomeMorador.toString(),
-                                        dadosVisita["observacao"]?.toString() ?? "",
-                                        dadosVisita["tipo"]?.toString() ?? "",
-                                        dadosVisita["data_hora_entrada"]?.toString() ?? "",
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+                                  child: VisitaAgendaCard().cardVisita(
+                                    nomeMorador.toString(),
+                                    dadosVisita["observacao"]?.toString() ?? "",
+                                    dadosVisita["tipo"]?.toString() ?? "",
+                                    dadosVisita["data_hora_entrada"]?.toString() ?? "",
+                                  ),
+                                );
+                              },
                             ),
-                        ],
-                      ),
-                    ),
-                  ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],

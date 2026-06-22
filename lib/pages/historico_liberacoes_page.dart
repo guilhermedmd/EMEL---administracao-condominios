@@ -26,10 +26,10 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
 Future<void> carregarEstatisticas()async{
             UsuarioSession sessionUsuario = context.read<UsuarioSession>();
             int idMorador = sessionUsuario.idMorador;
-            int qtdeVisitas = await _visitaController.buscarQtdeVisitas(1);
-            int qtdePrestadores = await _visitaController.buscarQtdePrestadoresServico(1);
-            int qtdeVisitantes = await _visitaController.buscarQtdeVisitantes(1);
-            int qtdeEntregas = await _notificacaocontroller.buscarQtdeEntregas(1);
+            int qtdeVisitas = await _visitaController.buscarQtdeVisitas(idMorador);
+            int qtdePrestadores = await _visitaController.buscarQtdePrestadoresServico(idMorador);
+            int qtdeVisitantes = await _visitaController.buscarQtdeVisitantes(idMorador);
+            int qtdeEntregas = await _notificacaocontroller.buscarQtdeEntregas(idMorador);
             setState(() {
               _qtdeVisitas = qtdeVisitas; 
               _qtdePrestadores = qtdePrestadores; 
@@ -50,7 +50,6 @@ Future<void> carregarEstatisticas()async{
     try {
       final supabase = Supabase.instance.client;
 
-      // 1. Mudamos para .select('*') para evitar erros de relacionamento agora
       final response = await supabase
     .from('visita')
     .select('''
@@ -68,7 +67,6 @@ Future<void> carregarEstatisticas()async{
 
       final List<dynamic> data = response as List<dynamic>;
 
-      // 2. Substitua o mapa antigo por este novo:
      return data.map((item) {
   String nome = 'Sem nome';
 
@@ -91,7 +89,6 @@ Future<void> carregarEstatisticas()async{
     }
   }
 
-  // Função para formatar a data que vem do banco
   String _formatarData(String? dataBanco) {
     if (dataBanco == null) return '';
     try {
@@ -127,7 +124,7 @@ Future<void> carregarEstatisticas()async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF00D09E), // Fundo verde superior
+      backgroundColor: const Color(0xFF00D09E), 
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text(
@@ -216,7 +213,6 @@ Future<void> carregarEstatisticas()async{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Título e botão "See all"
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -264,6 +260,8 @@ Future<void> carregarEstatisticas()async{
                         final listaHistorico = snapshot.data!;
 
                         return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: const BouncingScrollPhysics(),
                           itemCount: listaHistorico.length,
                           itemBuilder: (context, index) {
                             final item = listaHistorico[index];

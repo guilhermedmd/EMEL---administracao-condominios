@@ -60,7 +60,6 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Greeting and House Card Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

@@ -33,7 +33,7 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
   child: Container(
     color: const Color(0xFFf4fcf4),
     child: ClipRRect(
-    borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(80)),
+    borderRadius: BorderRadius.only(topLeft: Radius.circular(40), topRight: Radius.circular(40)),
     child: NavigationBar(
       height: 65,
       backgroundColor: const Color(0xFFDFF7E2),
@@ -53,13 +53,13 @@ class _NavegacaoPageState extends State<NavegacaoPage> {
           label: '',
         ),
         NavigationDestination(
-          icon: Icon(Icons.payments_outlined),
-          selectedIcon: Icon(Icons.payments, color: Color(corBotoes)),
+          icon: Icon(Icons.recent_actors_outlined),
+          selectedIcon: Icon(Icons.recent_actors, color: Color(corBotoes)),
           label: '',
         ),
         NavigationDestination(
-          icon: Icon(Icons.layers_outlined),
-          selectedIcon: Icon(Icons.layers, color: Color(corBotoes)),
+          icon: Icon(Icons.handyman_outlined),
+          selectedIcon: Icon(Icons.handyman, color: Color(corBotoes)),
           label: '',
         ),
         NavigationDestination(

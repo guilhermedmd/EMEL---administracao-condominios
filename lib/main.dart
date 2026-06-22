@@ -1,16 +1,7 @@
-import 'package:emel/models/notificacao.dart';
-import 'package:emel/pages/cadastro_visitante.dart';
-import 'package:emel/pages/historico_liberacoes_page.dart';
-import 'package:emel/pages/home.dart';
-import 'package:emel/pages/notificacao.dart';
-import 'package:emel/pages/perfil/perfil_page.dart';
 import 'package:emel/pages/splash_page.dart';
-import 'package:emel/pages/visitante/home_visitante_page.dart';
-import 'package:emel/repository/morador_repository.dart';
 import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
-// import 'package:emel/teste.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
