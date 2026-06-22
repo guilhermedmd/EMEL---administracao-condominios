@@ -1,6 +1,10 @@
+import 'package:emel/controllers/notificacaoController.dart';
+import 'package:emel/controllers/visita_controller.dart';
+import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TelaHistoricoLiberacoes extends StatefulWidget {
@@ -12,11 +16,35 @@ class TelaHistoricoLiberacoes extends StatefulWidget {
 }
 
 class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
+  final VisitaController _visitaController = VisitaController();
+  final Notificacaocontroller _notificacaocontroller = Notificacaocontroller();
+  int _qtdeVisitas = 0;
+  int _qtdePrestadores = 0;
+  int _qtdeVisitantes = 0;
+  int _qtdeEntregas = 0;
+
+Future<void> carregarEstatisticas()async{
+            UsuarioSession sessionUsuario = context.read<UsuarioSession>();
+            int idMorador = sessionUsuario.idMorador;
+            int qtdeVisitas = await _visitaController.buscarQtdeVisitas(1);
+            int qtdePrestadores = await _visitaController.buscarQtdePrestadoresServico(1);
+            int qtdeVisitantes = await _visitaController.buscarQtdeVisitantes(1);
+            int qtdeEntregas = await _notificacaocontroller.buscarQtdeEntregas(1);
+            setState(() {
+              _qtdeVisitas = qtdeVisitas; 
+              _qtdePrestadores = qtdePrestadores; 
+              _qtdeVisitantes = qtdeVisitantes; 
+              _qtdeEntregas = qtdeEntregas; 
+            });
+  }
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('pt_BR', null);
+    carregarEstatisticas();
   }
+
+  
 
   Future<List<Map<String, dynamic>>> _buscarHistorico() async {
     try {
@@ -24,23 +52,39 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
 
       // 1. Mudamos para .select('*') para evitar erros de relacionamento agora
       final response = await supabase
-          .from('visita')
-          .select('*')
-          .order('data_hora_entrada', ascending: false);
+    .from('visita')
+    .select('''
+      data_hora_entrada,
+      tipo,
+      observacao,
+      participantes_visita(
+        visitante(
+          nome
+        )
+      )
+    ''')
+    .eq('id_morador_fk', 1)
+    .not('data_hora_saida', 'is', null);
 
       final List<dynamic> data = response as List<dynamic>;
 
       // 2. Substitua o mapa antigo por este novo:
-      return data.map((item) {
-        return {
-          // Aqui usamos o ID (chave estrangeira) pois o nome do visitante ainda não veio
-          "nome": "Visitante ID: ${item['id_visitante_fk'] ?? 'Sem ID'}",
-          "data": _formatarData(item['data_hora_entrada']),
-          "categoria": item['tipo'] ?? 'Outros',
-          "status": 'Concluído',
-          "icone": _obterIconePorCategoria(item['tipo']),
-        };
-      }).toList();
+     return data.map((item) {
+  String nome = 'Sem nome';
+
+  if (item['participantes_visita'] != null &&
+      item['participantes_visita'].isNotEmpty) {
+    nome = item['participantes_visita'][0]['visitante']['nome'] ?? 'Sem nome';
+  }
+
+  return {
+    "nome": nome,
+    "data": _formatarData(item['data_hora_entrada']),
+    "categoria": item['tipo'] ?? 'Outros',
+    "status": item["observacao"],
+    "icone": _obterIconePorCategoria(item['tipo']),
+  };
+}).toList();
     } catch (e) {
       debugPrint('Erro ao buscar dados: $e');
       return [];
@@ -85,10 +129,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
     return Scaffold(
       backgroundColor: const Color(0xFF00D09E), // Fundo verde superior
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF052224)),
-          onPressed: () {}, // Ação de voltar
-        ),
+        automaticallyImplyLeading: false,
         title: const Text(
           "Histórico De Liberações",
           style: TextStyle(
@@ -129,9 +170,9 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _infoText("Total De Visitas", "32"),
+                    _infoText("Total De Visitas", "$_qtdeVisitas"),
                     Container(height: 30, width: 1, color: Colors.white54),
-                    _infoText("Prestadores Ativos", "2"),
+                    _infoText("Prestadores Ativos", "$_qtdePrestadores"),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -143,37 +184,18 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
                       child: _cardInfo(
                         Icons.person_outline,
                         "Visitantes",
-                        "24",
+                        "$_qtdeVisitantes",
                       ),
                     ),
                     const SizedBox(width: 15),
                     Expanded(
-                      child: _cardInfo(Icons.card_giftcard, "Entregas", "8"),
+                      child: _cardInfo(Icons.card_giftcard, "Entregas", "$_qtdeEntregas"),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
 
-                // Mensagem de sucesso
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Todos Os Seus Convidados Foram\nIdentificados Com Sucesso ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFF052224),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
-                      ),
-                    ),
-                    Icon(
-                      Icons.check_box_outlined,
-                      size: 16,
-                      color: Color(0xFF052224),
-                    ),
-                  ],
-                ),
+                
               ],
             ),
           ),
@@ -204,13 +226,6 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF052224),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "See all",
-                          style: TextStyle(color: Colors.black54, fontSize: 13),
                         ),
                       ),
                     ],

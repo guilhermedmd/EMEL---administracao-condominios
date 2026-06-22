@@ -13,4 +13,9 @@ class Notificacaocontroller {
 
   }
 
+  Future<int> buscarQtdeEntregas(int idMorador)async{
+    int qtdeEntregas = await notificacoesService.buscarQtdeEntregas(idMorador);
+    return qtdeEntregas;
+  }
+
 }

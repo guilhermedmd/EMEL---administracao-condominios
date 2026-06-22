@@ -36,6 +36,17 @@ class UsuarioSession extends ChangeNotifier {
     return usuario["id_morador"];
   }
 
+  
+  int get idVisitante {
+    final usuario = usuarioBox.get("user");
+
+    if (usuario == null) {
+      return 0;
+    }
+
+    return usuario["id_visitante"];
+  }
+
    int get idMoradorFk {
     final usuario = usuarioBox.get("user");
 

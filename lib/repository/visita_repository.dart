@@ -16,41 +16,59 @@ class VisitaRepository {
     });
   }
 
-  // Adicione em VisitaRepository ou em um novo repositório
-  // Para Estatísticas Gerais
-  Future<Map<String, int>> buscarEstatisticasGerais() async {
-    // Executamos o count dentro de um select para garantir compatibilidade
-    final totalVisitas = await supabase.from("visita").count(CountOption.exact);
-    final totalVisitantes = await supabase
-        .from("visitante")
-        .count(CountOption.exact);
-
-    return {
-      "totalVisitas":
-          totalVisitas, // Remova o .count se ele retornar o valor direto
-      "totalVisitantes": totalVisitantes,
-    };
-  }
-
-  // Para Prestadores de Serviço
-  Future<int> buscarQtdPrestadoresPorMorador(int idMorador) async {
-    final response = await supabase
-        .from("visita")
-        .select("id_visitante") // Seleciona apenas o campo que quer contar
-        .eq("id_morador", idMorador)
-        .eq("tipo_visitante", "prestador_servico")
-        .count(CountOption.exact); // Aplica a contagem na query já filtrada
-
-    return response.count ?? 0;
-  }
-
-  Future<List<Map<String, dynamic>>> listarHistoricoLiberacoes() async {
-  // O Supabase precisa entender o caminho: visita -> participantes_visita -> visitante
-  final response = await supabase
+  Future<int> buscarQtdeVisitas(int idMorador) async {
+    print("Entrou em buscarQtdeVisitas");
+    final responseVisitas = await supabase
     .from('visita')
-    .select('*') // Busca só os dados da tabela visita, sem tentar relacionar com visitante
-    .order('data_hora_entrada', ascending: false);
+    .select('id_visita')
+    .eq('id_morador_fk', idMorador) 
+    .count(CountOption.exact);
+    print("visitas: ${responseVisitas.count}");
 
-  return List<Map<String, dynamic>>.from(response);
+  final qtdeVisitas = responseVisitas.count;
+
+    return qtdeVisitas;
+  }
+
+  Future<int> buscarQtdeVisitantes(int idMorador)async{
+    final responseVisitantes = await supabase
+    .from('participantes_visita')
+    .select('id_visitante_fk, visita!inner(id_morador_fk)') 
+    .eq('visita.id_morador_fk', idMorador) 
+    .count(CountOption.exact);
+    final qtdeVisitantes = responseVisitantes.count;
+
+    return qtdeVisitantes;
+  }
+
+  Future<int> buscarQtdPrestadoresPorMorador(int idMorador) async {
+    final responsePrestadores = await supabase
+    .from('visita')
+    .select('id_visita')
+    .eq('tipo', 'Prestado de serviçosr')
+    .eq('id_morador_fk', idMorador)
+    .count(CountOption.exact);
+  final qtdePrestadores = responsePrestadores.count;
+    return qtdePrestadores;
+  }
+
+  // para visitante
+  Future<List<dynamic>> buscarHistoricoVisitante(int idVisitante) async {
+  final response = await supabase
+      .from('participantes_visita')
+      .select('''
+        visita(
+          observacao,
+          data_hora_entrada,
+          tipo,
+          morador(
+            nome
+          )
+        )
+      ''')
+      .eq('id_visitante_fk', idVisitante);
+      print(response);
+
+  return response;
 }
 }
