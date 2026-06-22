@@ -30,4 +30,9 @@ class NotificacoesService {
       }
       return (esteMes, anteriores);
     }
+
+    Future<int> buscarQtdeEntregas(int idMorador)async{
+      int qtdeEntregas = await notificacaoRepository.buscarQtdeEntregas(idMorador);
+      return qtdeEntregas;
+    }
 }

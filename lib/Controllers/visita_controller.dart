@@ -23,4 +23,24 @@ class VisitaController {
 
     await visitaService.cadastrarVisita(visita, idVisitante);
   }
+
+  Future<int> buscarQtdeVisitas(int idMorador)async{
+    int qtdeVisitas = await visitaService.buscarQtdeVisitas(idMorador);
+    return qtdeVisitas;
+  }
+
+  Future<int> buscarQtdeVisitantes(int idMorador)async{
+    int qtdeVisitantes = await visitaService.buscarQtdeVisitantes(idMorador);
+    return qtdeVisitantes;
+  }
+
+  Future<int> buscarQtdePrestadoresServico(int idMorador)async{
+    int qtdePrestadores = await visitaService.buscarqtdePrestadoresServico(idMorador);
+    return qtdePrestadores;
+  }
+
+   Future<List<dynamic>> buscarVisitasAgendadas(int idVisitante) async{
+    List<dynamic> visitasAgendadas = await visitaService.buscarVisitasAgendadas(idVisitante);
+    return visitasAgendadas;
+  }
 }

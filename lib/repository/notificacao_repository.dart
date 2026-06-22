@@ -36,14 +36,16 @@ class NotificacaoRepository {
     return notificacoes;
   }
 
-  Future<int> buscarQtdEntregas(int idMorador) async {
-    final response = await supabase
-        .from("notificacao")
-        .select("id_notificacao") // Apenas selecione o campo, sem FetchOptions
-        .eq("id_morador_fk", idMorador)
-        .eq("tipo", "entrega")
-        .count(CountOption.exact); // A contagem acontece aqui
+  Future<int> buscarQtdeEntregas(int idMorador) async{
+    final responseEntregas = await supabase
+    .from('notificacao')
+    .select('id_notificacao')
+    .eq('tipo', 'Entrega')
+    .eq('id_morador_fk', idMorador) 
+    .count(CountOption.exact);
+    print("entregas: ${responseEntregas.count}");
+    final qtdeEntregas = responseEntregas.count;
 
-    return (response.count ?? 0).toInt();
+    return qtdeEntregas;
   }
 }
