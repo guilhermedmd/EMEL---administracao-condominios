@@ -67,7 +67,6 @@ class VisitaRepository {
         )
       ''')
       .eq('id_visitante_fk', idVisitante);
-      print(response);
 
   return response;
 }

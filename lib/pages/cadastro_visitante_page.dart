@@ -56,7 +56,6 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
 
   @override
   Widget build(BuildContext context) {
-    // Estilo que define o visual arredondado e colorido dos campos
     final inputDecoration = InputDecoration(
       filled: true,
       fillColor: const Color(0xFFD4E2DB),
@@ -76,7 +75,6 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Ícone de voltar e Título
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
@@ -99,7 +97,6 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
                 ),
               ),
             ),
-            // Área Branca com o Formulário
             Expanded(
               child: Defaultlayout(
                 child: Padding(
