@@ -22,6 +22,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:emel/Controllers/visitante_controller.dart';
 import 'package:emel/Controllers/visita_controller.dart';
 
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -33,6 +35,10 @@ void main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!
   );
+
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose); // Vai imprimir logs úteis no console pra gente
+  OneSignal.initialize("9298e82d-e2ee-4a5c-a6ed-19e24d5256da"); // O seu App ID exato
+  OneSignal.Notifications.requestPermission(true); // Faz surgir a caixinha pedindo permissão pro usuário
   
   //  try {
 

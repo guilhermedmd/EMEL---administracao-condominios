@@ -80,7 +80,7 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
                   ),
               const SizedBox(height: 10),
               const Text(
-                "Seja bem vindo(a)",
+                "Seja bem-vindo(a)",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),

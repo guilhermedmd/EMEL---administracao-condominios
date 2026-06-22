@@ -41,6 +41,8 @@ dependencies:
   hive_ce_flutter: ^2.3.4
   provider: ^6.1.5+1
   intl: ^0.20.2
+  onesignal_flutter: ^5.6.2
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

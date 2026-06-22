@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:emel/widgets/default_layout.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
 class CadastroVisitantePage extends StatefulWidget {
   const CadastroVisitantePage({super.key});
 
@@ -51,6 +52,7 @@ class _CadastroVisitantePageState extends State<CadastroVisitantePage> {
       if (mounted) setState(() => _carregando = false);
     }
   }
+
 
   
 

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 // Ajuste os caminhos abaixo conforme a sua estrutura de pastas
 import 'package:emel/sessionRepository/usuario_session.dart'; 
-import 'package:emel/controllers/visita_controller.dart'; // Ou onde estiver salvo o seu controller
+import 'package:emel/controllers/visita_controller.dart'; 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class CadastroVisitaPage extends StatefulWidget {
   const CadastroVisitaPage({super.key});
@@ -144,6 +147,9 @@ Future<void> _selecionarDataHoraSaida() async {
     }
   }
 }
+
+
+
 
   @override
   Widget build(BuildContext context) {
