@@ -110,7 +110,7 @@ Future<void> enviarNotificacao(String tokenVisitante) async {
     "app_id": appId,
     // Aqui passamos o "CEP" do celular que pegamos do Supabase:
     "include_subscription_ids": [tokenVisitante], 
-    "headings": {"en": "Visita Confirmada!", "pt": "Visita Confirmada!"},
+    "headings": {"en": "Visita agendada", "pt": "Visita Agendada!"},
     "contents": {"en": "Sua entrada foi autorizada na portaria.", "pt": "Sua entrada foi autorizada na portaria."}
   });
 
