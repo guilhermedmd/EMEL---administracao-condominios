@@ -1,3 +1,4 @@
+import 'package:emel/pages/informacoes_visita_page.dart';
 import 'package:emel/pages/splash_page.dart';
 import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';

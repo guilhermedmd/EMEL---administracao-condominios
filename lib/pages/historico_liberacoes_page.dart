@@ -1,5 +1,6 @@
 import 'package:emel/controllers/notificacaoController.dart';
 import 'package:emel/controllers/visita_controller.dart';
+import 'package:emel/pages/informacoes_visita_page.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -23,20 +24,27 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
   int _qtdeVisitantes = 0;
   int _qtdeEntregas = 0;
 
-Future<void> carregarEstatisticas()async{
-            UsuarioSession sessionUsuario = context.read<UsuarioSession>();
-            int idMorador = sessionUsuario.idMorador;
-            int qtdeVisitas = await _visitaController.buscarQtdeVisitas(idMorador);
-            int qtdePrestadores = await _visitaController.buscarQtdePrestadoresServico(idMorador);
-            int qtdeVisitantes = await _visitaController.buscarQtdeVisitantes(idMorador);
-            int qtdeEntregas = await _notificacaocontroller.buscarQtdeEntregas(idMorador);
-            setState(() {
-              _qtdeVisitas = qtdeVisitas; 
-              _qtdePrestadores = qtdePrestadores; 
-              _qtdeVisitantes = qtdeVisitantes; 
-              _qtdeEntregas = qtdeEntregas; 
-            });
+  Future<void> carregarEstatisticas() async {
+    UsuarioSession sessionUsuario = context.read<UsuarioSession>();
+    int idMorador = sessionUsuario.idMorador;
+    int qtdeVisitas = await _visitaController.buscarQtdeVisitas(idMorador);
+    int qtdePrestadores = await _visitaController.buscarQtdePrestadoresServico(
+      idMorador,
+    );
+    int qtdeVisitantes = await _visitaController.buscarQtdeVisitantes(
+      idMorador,
+    );
+    int qtdeEntregas = await _notificacaocontroller.buscarQtdeEntregas(
+      idMorador,
+    );
+    setState(() {
+      _qtdeVisitas = qtdeVisitas;
+      _qtdePrestadores = qtdePrestadores;
+      _qtdeVisitantes = qtdeVisitantes;
+      _qtdeEntregas = qtdeEntregas;
+    });
   }
+
   @override
   void initState() {
     super.initState();
@@ -44,16 +52,16 @@ Future<void> carregarEstatisticas()async{
     carregarEstatisticas();
   }
 
-  
-
   Future<List<Map<String, dynamic>>> _buscarHistorico() async {
     try {
       final supabase = Supabase.instance.client;
 
       final response = await supabase
-    .from('visita')
-    .select('''
+          .from('visita')
+          .select('''
+      id_visita,
       data_hora_entrada,
+      data_hora_saida,
       tipo,
       observacao,
       participantes_visita(
@@ -62,27 +70,31 @@ Future<void> carregarEstatisticas()async{
         )
       )
     ''')
-    .eq('id_morador_fk', 1)
-    .not('data_hora_saida', 'is', null);
+          .eq('id_morador_fk', 1)
+          .not('data_hora_saida', 'is', null);
 
       final List<dynamic> data = response as List<dynamic>;
 
-     return data.map((item) {
-  String nome = 'Sem nome';
+      return data.map((item) {
+        String nome = 'Sem nome';
 
-  if (item['participantes_visita'] != null &&
-      item['participantes_visita'].isNotEmpty) {
-    nome = item['participantes_visita'][0]['visitante']['nome'] ?? 'Sem nome';
-  }
+        if (item['participantes_visita'] != null &&
+            item['participantes_visita'].isNotEmpty) {
+          nome =
+              item['participantes_visita'][0]['visitante']['nome'] ??
+              'Sem nome';
+        }
 
-  return {
-    "nome": nome,
-    "data": _formatarData(item['data_hora_entrada']),
-    "categoria": item['tipo'] ?? 'Outros',
-    "status": item["observacao"],
-    "icone": _obterIconePorCategoria(item['tipo']),
-  };
-}).toList();
+        return {
+          "id": item["id_visita"],
+          "nome": nome,
+          "data": _formatarData(item['data_hora_entrada']),
+          "data_hora_saida": _formatarData(item['data_hora_saida']),
+          "categoria": item['tipo'] ?? 'Outros',
+          "status": item["observacao"],
+          "icone": _obterIconePorCategoria(item['tipo']),
+        };
+      }).toList();
     } catch (e) {
       debugPrint('Erro ao buscar dados: $e');
       return [];
@@ -124,7 +136,7 @@ Future<void> carregarEstatisticas()async{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF00D09E), 
+      backgroundColor: const Color(0xFF00D09E),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text(
@@ -186,13 +198,15 @@ Future<void> carregarEstatisticas()async{
                     ),
                     const SizedBox(width: 15),
                     Expanded(
-                      child: _cardInfo(Icons.card_giftcard, "Entregas", "$_qtdeEntregas"),
+                      child: _cardInfo(
+                        Icons.card_giftcard,
+                        "Entregas",
+                        "$_qtdeEntregas",
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
-
-                
               ],
             ),
           ),
@@ -266,8 +280,10 @@ Future<void> carregarEstatisticas()async{
                           itemBuilder: (context, index) {
                             final item = listaHistorico[index];
                             return _itemLiberacao(
+                              id: item["id_visita"],
                               nome: item["nome"],
                               data: item["data"],
+                              dataSaida: item["data_hora_saida"],
                               categoria: item["categoria"],
                               status: item["status"],
                               icone: item["icone"],
@@ -343,11 +359,13 @@ Future<void> carregarEstatisticas()async{
   }
 
   Widget _itemLiberacao({
+    required int? id,
     required String nome,
     required String data,
     required String categoria,
     required String status,
     required IconData icone,
+    required String? dataSaida
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -374,7 +392,7 @@ Future<void> carregarEstatisticas()async{
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    nome,
+                    "Corinthians",
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -423,17 +441,30 @@ Future<void> carregarEstatisticas()async{
             ),
 
             // Status Final
+            // Expanded(
+            //   flex: 2,
+            //   child: Center(
+            //     child: Text(
+            //       status,
+            //       textAlign: TextAlign.center,
+            //       style: const TextStyle(
+            //         fontSize: 11,
+            //         fontWeight: FontWeight.bold,
+            //         color: Color(0xFF0068FF),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Expanded(
               flex: 2,
               child: Center(
-                child: Text(
-                  status,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0068FF),
-                  ),
+                child: FilledButton(
+                  onPressed: () {
+                    // Ação executada ao clicar
+                    print('Botão pressionado!');
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AgendamentoDetalhesScreen(dataHora: data,observacoes: status,tipoVisita: categoria,visitantes: [nome], possuiPermissao: false,)));
+                  },
+                  child: Icon(Icons.info_outline_rounded),
                 ),
               ),
             ),
