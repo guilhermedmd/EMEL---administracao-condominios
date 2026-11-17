@@ -107,10 +107,9 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
       DateTime data = DateTime.parse(dataBanco);
       // Formata para: "12:43 - Dezembro 13"
       String hora = DateFormat('HH:mm').format(data);
-      String mesDia = DateFormat('MMMM dd', 'pt_BR').format(data);
+      String dataNew = DateFormat('dd/MM/yyyy').format(data);
       // Capitaliza a primeira letra do mês
-      mesDia = mesDia[0].toUpperCase() + mesDia.substring(1);
-      return "$hora - $mesDia";
+      return "$hora - $dataNew";
     } catch (e) {
       return '';
     }
@@ -280,7 +279,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
                           itemBuilder: (context, index) {
                             final item = listaHistorico[index];
                             return _itemLiberacao(
-                              id: item["id_visita"],
+                              id: item["id"],
                               nome: item["nome"],
                               data: item["data"],
                               dataSaida: item["data_hora_saida"],
@@ -392,7 +391,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Corinthians",
+                    nome,
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
@@ -460,9 +459,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
               child: Center(
                 child: FilledButton(
                   onPressed: () {
-                    // Ação executada ao clicar
-                    print('Botão pressionado!');
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AgendamentoDetalhesScreen(dataHora: data,observacoes: status,tipoVisita: categoria,visitantes: [nome], possuiPermissao: false,)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AgendamentoDetalhesScreen(idVisita:id, dataHora: data,observacoes: status,tipoVisita: categoria,visitantes: [nome], possuiPermissao: true,)));
                   },
                   child: Icon(Icons.info_outline_rounded),
                 ),

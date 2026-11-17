@@ -137,4 +137,17 @@ class VisitaRepository {
         })
         .eq('id_visita', idVisita);
   }
+
+  Future<void>deletarVisitaPorId(int idVisita) async{
+    try {
+        await supabase
+            .from('visita')
+            .delete()
+            .eq('id_visita', idVisita);
+
+        print('Visita deletada com sucesso!');
+      } catch (e) {
+        print('Erro ao deletar visita: $e');
+      }
+  }
 }

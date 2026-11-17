@@ -1,10 +1,11 @@
+import 'package:emel/utils/seletor_data_hora.dart';
+import 'package:emel/widgets/cancelar_visita.dart';
 import 'package:emel/widgets/default_layout.dart';
 import 'package:flutter/material.dart';
-// Importe o arquivo onde está o seu Defaultlayout
 
-class AgendamentoDetalhesScreen extends StatelessWidget {
+class AgendamentoDetalhesScreen extends StatefulWidget {
+  final int? idVisita;
   final String dataHora;
-  // final String dataHoraEntrada;
   final String observacoes;
   final List<String> visitantes;
   final String tipoVisita;
@@ -12,17 +13,41 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
 
   const AgendamentoDetalhesScreen({
     super.key,
+    required this.idVisita,
     required this.dataHora,
-    // required this.dataHoraEntrada,
     required this.observacoes,
     required this.visitantes,
     required this.tipoVisita,
-    required this.possuiPermissao
+    required this.possuiPermissao,
   });
 
-  /// Regra de validação para exibir os botões de ação.
+  @override
+  State<AgendamentoDetalhesScreen> createState() =>
+      _AgendamentoDetalhesScreenState();
+}
+
+class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
+  late bool _permissao;
+  late String _dataHoraAtual;
+  DateTime? dataVisita;
+
+  List<String> _separandoDataHora(String dataHora) {
+    List<String> horaData = dataHora.split("-");
+    if (horaData.length < 2) {
+      return [dataHora, ''];
+    }
+    return horaData;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _permissao = widget.possuiPermissao;
+    _dataHoraAtual = widget.dataHora;
+  }
+
   bool get _exibirBotoesAcao {
-    return possuiPermissao;
+    return _permissao;
   }
 
   @override
@@ -30,6 +55,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
     const corVerdePrincipal = Color(0xFF00D09E);
     const corTextoEscuro = Color(0xFF093030);
     const corBordaCard = Color(0xFF9BE3C4);
+    List<String> horaData = _separandoDataHora(_dataHoraAtual);
 
     return Scaffold(
       backgroundColor: corVerdePrincipal,
@@ -98,7 +124,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    dataHora,
+                                    horaData[0],
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w400,
@@ -116,7 +142,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
-                                    dataHora,
+                                    horaData[1],
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w400,
@@ -131,7 +157,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
 
                         const SizedBox(height: 26),
 
-                        // Cards lado a lado: Observações e Visitantes (com rolagem interna)
+                        // Cards lado a lado: Observações e Visitantes
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -169,7 +195,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                                         child: Align(
                                           alignment: Alignment.topLeft,
                                           child: Text(
-                                            observacoes,
+                                            widget.observacoes,
                                             style: const TextStyle(
                                               fontSize: 14,
                                               height: 1.3,
@@ -215,7 +241,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                                       child: ListView.builder(
                                         padding: EdgeInsets.zero,
                                         physics: const BouncingScrollPhysics(),
-                                        itemCount: visitantes.length,
+                                        itemCount: widget.visitantes.length,
                                         itemBuilder: (context, index) {
                                           return Padding(
                                             padding: const EdgeInsets.only(
@@ -235,7 +261,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                                                 ),
                                                 Expanded(
                                                   child: Text(
-                                                    visitantes[index],
+                                                    widget.visitantes[index],
                                                     style: const TextStyle(
                                                       fontSize: 14,
                                                       color: Color(0xFF222222),
@@ -267,10 +293,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(25),
-                            border: Border.all(
-                              color: corBordaCard,
-                              width: 1.2,
-                            ),
+                            border: Border.all(color: corBordaCard, width: 1.2),
                           ),
                           child: Row(
                             children: [
@@ -285,7 +308,7 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                               const SizedBox(width: 16),
                               Expanded(
                                 child: Text(
-                                  tipoVisita,
+                                  widget.tipoVisita,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFF222222),
@@ -305,7 +328,12 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: (){},
+                                  onPressed: () {
+                                    CancelarVisita.mostrarPopUp(
+                                      context,
+                                      widget.idVisita ?? 0,
+                                    );
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFF32459),
                                     foregroundColor: corTextoEscuro,
@@ -329,7 +357,26 @@ class AgendamentoDetalhesScreen extends StatelessWidget {
                               const SizedBox(width: 24),
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: (){},
+                                 onPressed: () async {
+                                    final novaDataHora = await selecionarDataHora(
+                                      context: context,
+                                      valorInicial: dataVisita,
+                                      dataMinima: DateTime.now(),
+                                    );
+
+                                    if (novaDataHora != null) {
+                                      final hora = novaDataHora.hour.toString().padLeft(2, '0');
+                                      final minuto = novaDataHora.minute.toString().padLeft(2, '0');
+                                      final dia = novaDataHora.day.toString().padLeft(2, '0');
+                                      final mes = novaDataHora.month.toString().padLeft(2, '0');
+                                      final ano = novaDataHora.year.toString();
+
+                                      setState(() {
+                                        dataVisita = novaDataHora;
+                                        _dataHoraAtual = '$hora:$minuto-$dia/$mes/$ano';
+                                      });
+                                    }
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF7D9285),
                                     foregroundColor: corTextoEscuro,

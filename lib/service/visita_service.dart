@@ -41,5 +41,8 @@ class VisitaService {
     List<dynamic> visitasAgendadas = await visitaRepository.buscarHistoricoVisitante(idVisitante);
     return visitasAgendadas;
   }
+  Future<void> deletarVisita(int idVisita) async{
+    await visitaRepository.deletarVisitaPorId(idVisita);
+  }
   
 }

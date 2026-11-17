@@ -6,16 +6,23 @@ import 'package:emel/pages/perfil/perfil_page.dart';
 import 'package:emel/pages/pagamentos_page.dart';
 
 class NavegacaoPage extends StatefulWidget {
-  const NavegacaoPage({super.key});
+  final int indice;
+  const NavegacaoPage({super.key, this.indice = 0});
+
 
   @override
   State<NavegacaoPage> createState() => _NavegacaoPageState();
 }
 
 class _NavegacaoPageState extends State<NavegacaoPage> {
-  int _indiceAtual = 0; // Começa no Perfil
+  late int _indiceAtual; // Começa no Perfil
   static const corBotoes = 0xff031314;
 
+  @override
+  void initState() {
+    super.initState();
+    _indiceAtual = widget.indice; // Inicia com o índice passado (padrão 0)
+  }
 
   @override
   Widget build(BuildContext context) {
