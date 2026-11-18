@@ -1,6 +1,9 @@
 import 'package:emel/models/visita.dart';
 import 'package:emel/repository/visita_repository.dart';
 import 'package:emel/repository/visitante_repository.dart';
+import 'package:emel/utils/formator_cpf.dart';
+import 'package:http/http.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class VisitaService {
   final VisitaRepository visitaRepository = VisitaRepository();
@@ -9,10 +12,10 @@ class VisitaService {
   Future<void> registrarNovaVisita(Visita visita, String cpfVisitante) async {
     
     // 1. Limpa a máscara do CPF (tira pontos e traços)
-    final cpfLimpo = cpfVisitante.replaceAll(RegExp(r'[^0-9]'), '');
+    dynamic cpfLimpo = FormatadorCpf().limparEValidarCpf(cpfVisitante);
 
     // 2. Busca o visitante pelo CPF
-    final visitanteEncontrado = await visitanteRepository.buscarPorCpf(cpfLimpo);
+    final visitanteEncontrado = await visitanteRepository.buscarPorCpf(cpfLimpo ?? 0);
 
     // 3. REGRA DE NEGÓCIO: Se não achar, joga o erro pra tela!
     if (visitanteEncontrado == null) {
@@ -49,5 +52,9 @@ class VisitaService {
     print("Service");
     await visitaRepository.editarHoraData(novaDataHora, idVisita);
   }
+  Future<List<dynamic>> buscarHistoricoVisitas(int idMorador) async{
+      final response = await visitaRepository.buscarHistoricoVistas(idMorador);
+      return response;
+   }
   
 }

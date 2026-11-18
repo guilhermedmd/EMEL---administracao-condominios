@@ -1,3 +1,4 @@
+import 'package:emel/utils/formator_datas.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -98,7 +99,7 @@ class HomePage extends StatelessWidget {
                       );
                     },
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.2),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                   Container(
                     width: 130,
                     height: 130,
@@ -293,7 +294,7 @@ class HomePage extends StatelessWidget {
                                 return NotificacaoCard.card(
                                   context, 
                                   notificacao["titulo"], 
-                                  notificacao["data_horario"]
+                                  FormatadorDatas().formatarData(notificacao["data_horario"])
                                 );
                               },
                             );

@@ -1,5 +1,6 @@
 import 'package:emel/models/visita.dart';
 import 'package:emel/service/visita_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class VisitaController {
   VisitaService visitaService = VisitaService();
@@ -50,7 +51,10 @@ class VisitaController {
     await visitaService.deletarVisita(idVisita);
   }
   Future<void> editarDataHora(DateTime novaDataHora, int idVisita) async{
-    print("controller");
     await visitaService.editarDataHora(idVisita, novaDataHora);
+  }
+  Future<List<dynamic>> buscarHistoricoVisitas(int idMorador) async{
+    final response = await visitaService.buscarHistoricoVisitas(idMorador);
+    return response;
   }
 }

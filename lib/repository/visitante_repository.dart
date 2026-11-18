@@ -77,4 +77,14 @@ Future<Visitante?> buscarPorCpf(String cpfBusca) async {
     print("Erro ao salvar o token: $e");
   }
 }
+ Future<int> buscarQtdeVisitantes(int idMorador) async {
+    final responseVisitantes = await supabase
+        .from('participantes_visita')
+        .select('id_visitante_fk, visita!inner(id_morador_fk)')
+        .eq('visita.id_morador_fk', idMorador)
+        .count(CountOption.exact);
+    final qtdeVisitantes = responseVisitantes.count;
+
+    return qtdeVisitantes;
+  }
 }

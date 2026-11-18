@@ -1,5 +1,6 @@
 import 'package:emel/controllers/notificacaoController.dart';
 import 'package:emel/controllers/visita_controller.dart';
+import 'package:emel/controllers/visitante_controller.dart';
 import 'package:emel/pages/informacoes_visita_page.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:emel/utils/formator_datas.dart';
@@ -19,6 +20,7 @@ class TelaHistoricoLiberacoes extends StatefulWidget {
 
 class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
   final VisitaController _visitaController = VisitaController();
+  final VisitanteController _visitanteController = VisitanteController();
   final Notificacaocontroller _notificacaocontroller = Notificacaocontroller();
   int _qtdeVisitas = 0;
   int _qtdePrestadores = 0;
@@ -32,7 +34,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
     int qtdePrestadores = await _visitaController.buscarQtdePrestadoresServico(
       idMorador,
     );
-    int qtdeVisitantes = await _visitaController.buscarQtdeVisitantes(
+    int qtdeVisitantes = await _visitanteController.buscarQtdeVisitantes(
       idMorador,
     );
     int qtdeEntregas = await _notificacaocontroller.buscarQtdeEntregas(
@@ -55,26 +57,10 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
 
   Future<List<Map<String, dynamic>>> _buscarHistorico() async {
     try {
-      final supabase = Supabase.instance.client;
-
-      final response = await supabase
-          .from('visita')
-          .select('''
-      id_visita,
-      data_hora_entrada,
-      data_hora_saida,
-      tipo,
-      observacao,
-      participantes_visita(
-        visitante(
-          nome
-        )
-      )
-    ''')
-          .eq('id_morador_fk', 1);
+      final response = await _visitaController.buscarHistoricoVisitas(UsuarioSession().idMorador);
           // .not('data_hora_saida', 'is', null);
 
-      final List<dynamic> data = response as List<dynamic>;
+      final List<dynamic> data = response;
 
       return data.map((item) {
         String nome = 'Sem nome';
@@ -85,12 +71,15 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
               item['participantes_visita'][0]['visitante']['nome'] ??
               'Sem nome';
         }
+        final String? dataSaidaFormatada = item['data_hora_saida'] != null
+        ? FormatadorDatas().formatarData(item['data_hora_saida'])
+        : null;
 
         return {
           "id": item["id_visita"],
           "nome": nome,
-          "data": _formatarData(item['data_hora_entrada']),
-          "data_hora_saida": _formatarData(item['data_hora_saida']),
+          "data": FormatadorDatas().formatarData(item['data_hora_entrada']),
+          "data_hora_saida": dataSaidaFormatada,
           "categoria": item['tipo'] ?? 'Outros',
           "status": item["observacao"],
           "icone": _obterIconePorCategoria(item['tipo']),
@@ -102,19 +91,19 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
     }
   }
 
-  String _formatarData(String? dataBanco) {
-    if (dataBanco == null) return '';
-    try {
-      DateTime data = DateTime.parse(dataBanco);
-      // Formata para: "12:43 - Dezembro 13"
-      String hora = DateFormat('HH:mm').format(data);
-      String dataNew = DateFormat('dd/MM/yyyy').format(data);
-      // Capitaliza a primeira letra do mês
-      return "$hora - $dataNew";
-    } catch (e) {
-      return '';
-    }
-  }
+  // String _formatarData(String? dataBanco) {
+  //   if (dataBanco == null) return '';
+  //   try {
+  //     DateTime data = DateTime.parse(dataBanco);
+  //     // Formata para: "12:43 - Dezembro 13"
+  //     String hora = DateFormat('HH:mm').format(data);
+  //     String dataNew = DateFormat('dd/MM/yyyy').format(data);
+  //     // Capitaliza a primeira letra do mês
+  //     return "$hora - $dataNew";
+  //   } catch (e) {
+  //     return '';
+  //   }
+  // }
 
   IconData _obterIconePorCategoria(String? categoria) {
     switch (categoria?.toLowerCase()) {
@@ -273,8 +262,8 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
 
                         final listaHistorico = snapshot.data!;
                         listaHistorico.sort((a, b) {
-                              final dataA = FormatorDatas().paraDateTime(a['data']);
-                              final dataB = FormatorDatas().paraDateTime(b['data']);
+                              final dataA = FormatadorDatas().paraDateTime(a['data']);
+                              final dataB = FormatadorDatas().paraDateTime(b['data']);
                               return dataB.compareTo(dataA);
                         });
 

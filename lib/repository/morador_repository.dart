@@ -11,8 +11,8 @@ class MoradorRepository{
   //   return moradores;
   // }
 
-  Future<Morador?> getMoradorPorLogin(String cpfLogin, String senhaLogin) async{
-      final response = await supabase.from("morador").select("id_morador, nome, senha, cpf, email, permissao, id_moradia_fk").eq("cpf", cpfLogin).eq("senha", senhaLogin).maybeSingle();
+  Future<Morador?> getMoradorPorLogin(String? cpfLogin, String senhaLogin) async{
+      final response = await supabase.from("morador").select("id_morador, nome, senha, cpf, email, permissao, id_moradia_fk").eq("cpf", cpfLogin ?? 0).eq("senha", senhaLogin).maybeSingle();
       if (response == null) {
       return null;
       }

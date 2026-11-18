@@ -1,5 +1,6 @@
 import 'package:emel/controllers/notificacaoController.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
+import 'package:emel/utils/formator_datas.dart';
 import 'package:emel/widgets/notificacao_card_details.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/widgets/default_layout.dart';
@@ -130,7 +131,7 @@ class _NotificacaoPageState extends State<NotificacaoPage> {
                               return NotificacaoCardDetails.notifCard(
                                 notificacao["titulo"],
                                 notificacao["descricao"],
-                                notificacao["data_horario"],
+                                FormatadorDatas().formatarData(notificacao["data_horario"]), 
                                 false,
                                 notificacao["tipo"],
                               );
@@ -167,7 +168,7 @@ class _NotificacaoPageState extends State<NotificacaoPage> {
                               return NotificacaoCardDetails.notifCard(
                                 notificacao["titulo"],
                                 notificacao["descricao"],
-                                notificacao["data_horario"],
+                                FormatadorDatas().formatarData(notificacao["data_horario"]), 
                                 false,
                                 notificacao["tipo"],
                               );

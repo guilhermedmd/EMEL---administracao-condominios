@@ -1,5 +1,6 @@
 import 'package:emel/controllers/visita_controller.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
+import 'package:emel/utils/formator_datas.dart';
 import 'package:emel/widgets/visita_agenda_card.dart';
 import 'package:flutter/material.dart';
 import 'package:emel/widgets/default_layout.dart';
@@ -143,7 +144,7 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
                                     nomeMorador.toString(),
                                     dadosVisita["observacao"]?.toString() ?? "",
                                     dadosVisita["tipo"]?.toString() ?? "",
-                                    dadosVisita["data_hora_entrada"]?.toString() ?? "",
+                                    FormatadorDatas().formatarData(dadosVisita["data_hora_entrada"]).toString(),
                                   ),
                                 );
                               },

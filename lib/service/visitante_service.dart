@@ -17,5 +17,8 @@ class VisitanteService {
   Future<List<Visitante>> listarVisitantes() async {
     return await visitanteRepository.listarVisitantes();
   }
-  
+  Future<int> buscarQtdeVisitantes(int idMorador) async {
+    final qtdeVisitantes = visitanteRepository.buscarQtdeVisitantes(idMorador);
+    return qtdeVisitantes;
+  }
 }

@@ -1,4 +1,6 @@
-class FormatorDatas {
+import 'package:intl/intl.dart';
+
+class FormatadorDatas {
 
   DateTime paraDateTime(String texto) {
   // Converte "15:10 - 23/06/2026" em um objeto DateTime
@@ -14,4 +16,16 @@ class FormatorDatas {
     int.parse(horaMinuto[1]), // minuto (10)
   );
 }
+  String formatarData(String? dataBanco) {
+    if (dataBanco == null) return '';
+    try {
+      DateTime data = DateTime.parse(dataBanco);
+      // Formata para: "12:43 - 13/12/2026"
+      String hora = DateFormat('HH:mm').format(data);
+      String dataNew = DateFormat('dd/MM/yyyy').format(data);
+      return "$hora - $dataNew";
+    } catch (e) {
+      return '';
+    }
+  }
 }

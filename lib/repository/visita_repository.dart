@@ -156,7 +156,23 @@ class VisitaRepository {
         print('Erro ao deletar visita: $e');
       }
   }
-  Future<void>editarDataHora(int idVisita, DateTime novaDataHora) async{
-    await supabase.from('visita').update({'data_hora_entrada': novaDataHora.toUtc().toIso8601String()}).eq('id_visita', idVisita);
+
+  Future<List<dynamic>> buscarHistoricoVistas(int idMorador) async{
+   final response = await supabase
+          .from('visita')
+          .select('''
+      id_visita,
+      data_hora_entrada,
+      data_hora_saida,
+      tipo,
+      observacao,
+      participantes_visita(
+        visitante(
+          nome
+        )
+      )
+    ''')
+          .eq('id_morador_fk', idMorador);
+    return response;
   }
 }

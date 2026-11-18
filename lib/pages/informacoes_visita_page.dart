@@ -54,9 +54,9 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
   }
 
   bool get _exibirBotoesAcao {
-    final dataAgendada = dataVisita ?? FormatorDatas().paraDateTime(_dataHoraAtual);
+    final dataAgendada = dataVisita ?? FormatadorDatas().paraDateTime(_dataHoraAtual);
     final bool isPassed = dataAgendada.isBefore(DateTime.now());
-    return _permissao && _dataSaida == "" && !isPassed;
+    return _permissao && (_dataSaida == "" || _dataSaida == null) && !isPassed;
   }
 
   @override

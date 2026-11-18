@@ -1,5 +1,6 @@
 import 'package:emel/models/visitante.dart';
 import 'package:emel/service/visitante_service.dart';
+import 'package:emel/utils/formator_cpf.dart';
 
 class VisitanteController {
   VisitanteService visitanteService = VisitanteService();
@@ -13,12 +14,16 @@ class VisitanteController {
   }
 
   Future<void> cadastrarVisitante(String nome, String cpf, String email, String senha, DateTime dataNasc) async{
-    Visitante visitante = Visitante.banco(nome, cpf, email, senha, dataNasc);
+    dynamic cpfLimpo = FormatadorCpf().limparEValidarCpf(cpf);
+    Visitante visitante = Visitante.banco(nome, cpfLimpo ?? 0, email, senha, dataNasc);
     await visitanteService.cadastrarVisitante(visitante);
   }
 
   Future<List<Visitante>> listarVisitantes() async {
     return await visitanteService.listarVisitantes();
   }
-  
+    Future<int> buscarQtdeVisitantes(int idMorador) async {
+    final qtdeVisitantes = visitanteService.buscarQtdeVisitantes(idMorador);
+    return qtdeVisitantes;
+  }
 }
