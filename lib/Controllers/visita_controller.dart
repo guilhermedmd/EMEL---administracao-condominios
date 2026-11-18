@@ -49,4 +49,8 @@ class VisitaController {
   Future<void> deletarVisitaPorId(int idVisita) async{
     await visitaService.deletarVisita(idVisita);
   }
+  Future<void> editarDataHora(DateTime novaDataHora, int idVisita) async{
+    print("controller");
+    await visitaService.editarDataHora(idVisita, novaDataHora);
+  }
 }

@@ -131,11 +131,17 @@ class VisitaRepository {
   }
   // método para editar horário e data da visita
   Future<void> editarHoraData(DateTime novaDataHora, int idVisita) async{
-      supabase.from('visita')
+    print("repository");
+    try{
+      await supabase.from('visita')
         .update({
           'data_hora_entrada': novaDataHora.toIso8601String(),
         })
         .eq('id_visita', idVisita);
+        print('Horário de visita editado com sucesso!');
+    }catch (e){
+      print("Erro ao editar horário de visita: $e");
+    }
   }
 
   Future<void>deletarVisitaPorId(int idVisita) async{
@@ -149,5 +155,8 @@ class VisitaRepository {
       } catch (e) {
         print('Erro ao deletar visita: $e');
       }
+  }
+  Future<void>editarDataHora(int idVisita, DateTime novaDataHora) async{
+    await supabase.from('visita').update({'data_hora_entrada': novaDataHora.toUtc().toIso8601String()}).eq('id_visita', idVisita);
   }
 }

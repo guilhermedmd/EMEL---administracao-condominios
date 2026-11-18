@@ -1,3 +1,6 @@
+import 'package:emel/controllers/visita_controller.dart';
+import 'package:emel/pages/navegacao_page.dart';
+import 'package:emel/utils/formator_datas.dart';
 import 'package:emel/utils/seletor_data_hora.dart';
 import 'package:emel/widgets/cancelar_visita.dart';
 import 'package:emel/widgets/default_layout.dart';
@@ -6,6 +9,7 @@ import 'package:flutter/material.dart';
 class AgendamentoDetalhesScreen extends StatefulWidget {
   final int? idVisita;
   final String dataHora;
+  final String? dataSaida;
   final String observacoes;
   final List<String> visitantes;
   final String tipoVisita;
@@ -19,6 +23,7 @@ class AgendamentoDetalhesScreen extends StatefulWidget {
     required this.visitantes,
     required this.tipoVisita,
     required this.possuiPermissao,
+    required this.dataSaida
   });
 
   @override
@@ -29,6 +34,7 @@ class AgendamentoDetalhesScreen extends StatefulWidget {
 class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
   late bool _permissao;
   late String _dataHoraAtual;
+  late String? _dataSaida;
   DateTime? dataVisita;
 
   List<String> _separandoDataHora(String dataHora) {
@@ -44,10 +50,13 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
     super.initState();
     _permissao = widget.possuiPermissao;
     _dataHoraAtual = widget.dataHora;
+    _dataSaida = widget.dataSaida;
   }
 
   bool get _exibirBotoesAcao {
-    return _permissao;
+    final dataAgendada = dataVisita ?? FormatorDatas().paraDateTime(_dataHoraAtual);
+    final bool isPassed = dataAgendada.isBefore(DateTime.now());
+    return _permissao && _dataSaida == "" && !isPassed;
   }
 
   @override
@@ -370,11 +379,16 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
                                       final dia = novaDataHora.day.toString().padLeft(2, '0');
                                       final mes = novaDataHora.month.toString().padLeft(2, '0');
                                       final ano = novaDataHora.year.toString();
-
+                                      // Provavelmente aqui entrará o novo endpoint
                                       setState(() {
                                         dataVisita = novaDataHora;
                                         _dataHoraAtual = '$hora:$minuto-$dia/$mes/$ano';
+                                        VisitaController().editarDataHora(novaDataHora, widget.idVisita ?? 0);
                                       });
+                                      Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (_) => const NavegacaoPage(indice: 1,)),
+                                    );
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(

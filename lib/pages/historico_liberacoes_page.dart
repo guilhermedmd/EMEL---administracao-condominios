@@ -2,6 +2,7 @@ import 'package:emel/controllers/notificacaoController.dart';
 import 'package:emel/controllers/visita_controller.dart';
 import 'package:emel/pages/informacoes_visita_page.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
+import 'package:emel/utils/formator_datas.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -70,8 +71,8 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
         )
       )
     ''')
-          .eq('id_morador_fk', 1)
-          .not('data_hora_saida', 'is', null);
+          .eq('id_morador_fk', 1);
+          // .not('data_hora_saida', 'is', null);
 
       final List<dynamic> data = response as List<dynamic>;
 
@@ -271,6 +272,11 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
                         }
 
                         final listaHistorico = snapshot.data!;
+                        listaHistorico.sort((a, b) {
+                              final dataA = FormatorDatas().paraDateTime(a['data']);
+                              final dataB = FormatorDatas().paraDateTime(b['data']);
+                              return dataB.compareTo(dataA);
+                        });
 
                         return ListView.builder(
                           padding: EdgeInsets.zero,
@@ -361,10 +367,10 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
     required int? id,
     required String nome,
     required String data,
+    required String? dataSaida,
     required String categoria,
     required String status,
     required IconData icone,
-    required String? dataSaida
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -459,7 +465,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
               child: Center(
                 child: FilledButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AgendamentoDetalhesScreen(idVisita:id, dataHora: data,observacoes: status,tipoVisita: categoria,visitantes: [nome], possuiPermissao: true,)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => AgendamentoDetalhesScreen(idVisita:id, dataHora: data, dataSaida: dataSaida, observacoes: status,tipoVisita: categoria,visitantes: [nome], possuiPermissao: UsuarioSession().permissaoUsuario,)));
                   },
                   child: Icon(Icons.info_outline_rounded),
                 ),

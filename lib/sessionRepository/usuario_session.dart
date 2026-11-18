@@ -41,7 +41,14 @@ class UsuarioSession extends ChangeNotifier {
     
   }
 
-
+  bool get permissaoUsuario {
+    final usuario = usuarioBox.get("user");
+    if (usuario == null){
+      return false;
+    }
+    return usuario["permissao"];
+    
+  }
 
   int get idMorador {
     final usuario = usuarioBox.get("user");

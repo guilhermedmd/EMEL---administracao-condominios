@@ -1,6 +1,7 @@
 class Morador {
   late int idMorador, idMoradiaFk;
   late String nome, senha, cpf, email;
+  late bool permissao;
  
   Morador(
     this.idMorador,
@@ -8,6 +9,7 @@ class Morador {
     this.senha,
     this.cpf,
     this.email,
+    this.permissao,
     this.idMoradiaFk
   );
   
@@ -18,6 +20,7 @@ class Morador {
       json['senha'],
       json['cpf'],
       json['email'],
+      json['permissao'],
       json['id_moradia_fk'],
     );
   }
@@ -27,5 +30,6 @@ class Morador {
   String get get_senha => senha;
   String get get_cpf => cpf;
   String get get_email => email;
+  bool get get_permissao => permissao;
   int get get_idMoradia => idMoradiaFk;
 }
