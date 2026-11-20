@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_ce/hive_ce.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:emel/repository/visitante_repository.dart'; 
+import 'package:emel/repository/morador_repository.dart';
+import 'package:emel/repository/visitante_repository.dart';
 
 class UsuarioSession extends ChangeNotifier {
 
@@ -10,6 +11,15 @@ class UsuarioSession extends ChangeNotifier {
 
   Future<void> salvarMorador(PostgrestMap morador) async {
     await usuarioBox.put("user", morador);
+
+    try {
+      MoradorRepository repository = MoradorRepository();
+      int idMorador = morador["id_morador"];
+      await repository.registrarTokenDispositivo(idMorador);
+    } catch (e) {
+      print("Erro ao tentar registrar o token do morador no login: $e");
+    }
+
     notifyListeners();
   }
 

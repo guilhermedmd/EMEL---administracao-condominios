@@ -1,4 +1,5 @@
 import 'package:emel/controllers/visita_controller.dart';
+import 'package:emel/pages/informacoes_visita_page.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:emel/utils/formator_datas.dart';
 import 'package:emel/widgets/visita_agenda_card.dart';
@@ -16,17 +17,26 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
   bool isLoading = true;
 
   Future<void> carregarDados() async {
-    UsuarioSession sessionUsuario = context.read<UsuarioSession>();
-    int idVisitante = sessionUsuario.idVisitante;
+    try {
+      UsuarioSession sessionUsuario = context.read<UsuarioSession>();
+      int idVisitante = sessionUsuario.idVisitante;
 
-    // Ajustado para passar a variável idVisitante corretamente
-    List<dynamic> list = await _visitaController.buscarVisitasAgendadas(idVisitante);
+      // Ajustado para passar a variável idVisitante corretamente
+      List<dynamic> list = await _visitaController.buscarVisitasAgendadas(idVisitante);
 
-    if (mounted) {
-      setState(() {
-        listaVistas.addAll(list);
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          listaVistas.addAll(list);
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Erro ao carregar visitas do visitante: $e');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -137,14 +147,59 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
                                 final nomeMorador = morador != null
                                     ? morador["nome"]
                                     : "Não informado";
+                                final condominio = morador != null
+                                    ? morador["condominio"]
+                                    : null;
+                                final String? urlMapaCondominio = condominio != null
+                                    ? (condominio["Token_Acesso"] ??
+                                            condominio["token_acesso"])
+                                        ?.toString()
+                                    : null;
+                                final String dataEntradaFormatada =
+                                    FormatadorDatas()
+                                        .formatarData(dadosVisita["data_hora_entrada"])
+                                        .toString();
+                                final String? dataSaidaFormatada =
+                                    dadosVisita["data_hora_saida"] != null
+                                        ? FormatadorDatas()
+                                            .formatarData(dadosVisita["data_hora_saida"])
+                                            .toString()
+                                        : null;
+                                final String observacao =
+                                    dadosVisita["observacao"]?.toString() ?? "";
+                                final String tipoVisita =
+                                    dadosVisita["tipo"]?.toString() ?? "";
 
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
-                                  child: VisitaAgendaCard().cardVisita(
-                                    nomeMorador.toString(),
-                                    dadosVisita["observacao"]?.toString() ?? "",
-                                    dadosVisita["tipo"]?.toString() ?? "",
-                                    FormatadorDatas().formatarData(dadosVisita["data_hora_entrada"]).toString(),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      debugPrint(
+                                        'URL mapa condomínio (visita ${dadosVisita["id_visita"]}): $urlMapaCondominio',
+                                      );
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => AgendamentoDetalhesScreen(
+                                            idVisita: dadosVisita["id_visita"],
+                                            dataHora: dataEntradaFormatada,
+                                            dataSaida: dataSaidaFormatada,
+                                            observacoes: observacao,
+                                            visitantes: [nomeMorador.toString()],
+                                            tipoVisita: tipoVisita,
+                                            possuiPermissao: true,
+                                            isVisitante: true,
+                                            urlMapaCondominio: urlMapaCondominio,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: VisitaAgendaCard().cardVisita(
+                                      nomeMorador.toString(),
+                                      observacao,
+                                      tipoVisita,
+                                      dataEntradaFormatada,
+                                    ),
                                   ),
                                 );
                               },

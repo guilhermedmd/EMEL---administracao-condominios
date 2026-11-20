@@ -6,144 +6,164 @@ import 'package:emel/pages/navegacao_page.dart';
 import 'package:emel/pages/visitante/navegacao_page_visitante.dart';
 import 'package:flutter/material.dart';
 
-class FormLoginVisitante extends StatelessWidget{
-  final TextEditingController cpfController = TextEditingController(); 
+class FormLoginVisitante extends StatefulWidget {
+  const FormLoginVisitante({super.key});
+
+  @override
+  State<FormLoginVisitante> createState() => _FormLoginVisitanteState();
+}
+
+class _FormLoginVisitanteState extends State<FormLoginVisitante> {
+  final TextEditingController cpfController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   final VisitanteController _visitanteController = VisitanteController();
 
-  Widget build(BuildContext context){
-    final laguraTela = MediaQuery.of(context).size.width;
+  @override
+  void dispose() {
+    cpfController.dispose();
+    senhaController.dispose();
+    super.dispose();
+  }
 
-     Future<void> login(TextEditingController cpf, TextEditingController senha)async{
-      print("ENTROU NO LOGIN");
-      try{
-        bool visitanteValido = await _visitanteController.login(cpfController.text, senhaController.text);
-      if(visitanteValido){
-        Navigator.push(context, MaterialPageRoute(builder:(context) => NavegacaoPageVisitante()));
-      }else{
+  Future<void> login(TextEditingController cpf, TextEditingController senha) async {
+    print("ENTROU NO LOGIN");
+    try {
+      bool visitanteValido = await _visitanteController.login(cpfController.text, senhaController.text);
+      if (!mounted) return;
+      if (visitanteValido) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NavegacaoPageVisitante()));
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("ERRO: login inválido!"))
+          const SnackBar(content: Text("ERRO: login inválido!")),
         );
       }
-      }catch(e, stackTrace) {
-    print("ERRO CAPTURADO:");
-    print(e);
-    print(stackTrace);
+    } catch (e, stackTrace) {
+      print("ERRO CAPTURADO:");
+      print(e);
+      print(stackTrace);
     }
-      
-    }
-    
-    return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: laguraTela * 0.1),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(bottom: 30),
-                              child: SizedBox(
-                                width: laguraTela * 0.75,
+  }
 
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        right: (laguraTela * 0.75) * 0.55,
-                                      ),
-                                      child: Padding(padding: EdgeInsets.only(bottom: 10), child:Text("CPF do Usuário:",
+  @override
+  Widget build(BuildContext context) {
+    final larguraTela = MediaQuery.of(context).size.width;
+
+    return ClipRRect(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(80),
+        topRight: Radius.circular(80),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: (constraints.maxHeight - 64).clamp(0.0, double.infinity),
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(bottom: larguraTela * 0.1),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 24),
+                            child: SizedBox(
+                              width: larguraTela * 0.75,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 12, bottom: 10),
+                                    child: Text(
+                                      "CPF do Usuário:",
                                       style: TextStyle(
                                         fontSize: 15,
-                                        fontWeight: FontWeight.bold
-                                      ),), 
-                                      ),
-                                      
-                                    ),
-                                    TextField(
-                                      controller: cpfController,
-                                       style: TextStyle(
-                                      color: Color(0xff0E3E3E)
-                                    ),
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            100,
-                                          ),
-                                          borderSide: BorderSide.none,
-                                        ),
-
-                                        fillColor: Color(0xFFDFF7E2),
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(
-                              width: laguraTela * 0.75,
-
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      right: (laguraTela * 0.75) * 0.55,
-                                    ),
-                                    child: Padding(padding: EdgeInsets.only(bottom: 10), child: Text("Senha:                    ",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold
-                                    ),),)
                                   ),
                                   TextField(
-                                    controller: senhaController,
-                                    obscureText: true,
-                                    style: TextStyle(
-                                      color: Color(0xff0E3E3E)
+                                    controller: cpfController,
+                                    style: const TextStyle(
+                                      color: Color(0xff0E3E3E),
                                     ),
                                     decoration: InputDecoration(
                                       filled: true,
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          100,
-                                        ),
+                                        borderRadius: BorderRadius.circular(100),
                                         borderSide: BorderSide.none,
                                       ),
-
-                                      fillColor: Color(0xffdcf4e4),
+                                      fillColor: const Color(0xFFDFF7E2),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
+                          ),
+                          SizedBox(
+                            width: larguraTela * 0.75,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 12, bottom: 10),
+                                  child: Text(
+                                    "Senha:",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                TextField(
+                                  controller: senhaController,
+                                  obscureText: true,
+                                  style: const TextStyle(
+                                    color: Color(0xff0E3E3E),
+                                  ),
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    fillColor: const Color(0xffdcf4e4),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await login(cpfController, senhaController);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF00D09E),
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 84,
+                          vertical: 20,
                         ),
                       ),
-
-                      ElevatedButton(
-                        onPressed: () async{
-                          // falta adaptar para o login do visitante tbm
-                          await login(cpfController, senhaController);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF00D09E),
-                          foregroundColor: Colors.black,
-                           padding: EdgeInsets.symmetric(
-                          horizontal: 84,
-                          vertical: 24,
-                        )
-                        ), 
-                        child: Text("Log in",
+                      child: const Text(
+                        "Log in",
                         style: TextStyle(
                           fontSize: 15,
-                          fontWeight: FontWeight.bold
-                        )
+                          fontWeight: FontWeight.bold,
                         ),
-                        ),
-                      Padding(padding: EdgeInsets.only(top: 20),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
                       child: TextButton(
                         onPressed: () {},
                         style: ButtonStyle(
@@ -151,24 +171,45 @@ class FormLoginVisitante extends StatelessWidget{
                           padding: WidgetStateProperty.all(EdgeInsets.zero),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: Text("Esqueceu sua senha?", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff0E3E3E)),),
+                        child: const Text(
+                          "Esqueceu sua senha?",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff0E3E3E),
+                          ),
+                        ),
                       ),
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 20),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => CadastroVisitantePage()));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const CadastroVisitantePage()),
+                          );
                         },
                         style: ButtonStyle(
                           overlayColor: WidgetStateProperty.all(Colors.transparent),
                           padding: WidgetStateProperty.all(EdgeInsets.zero),
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
-                        child: Text("Cadastre-se!", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xff0E3E3E)),),
+                        child: const Text(
+                          "Cadastre-se!",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff0E3E3E),
+                          ),
+                        ),
                       ),
-                      ),
-                    ],
-                  ),
-                );
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

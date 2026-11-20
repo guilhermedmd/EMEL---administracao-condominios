@@ -22,36 +22,38 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
   final VisitaController _visitaController = VisitaController();
   final VisitanteController _visitanteController = VisitanteController();
   final Notificacaocontroller _notificacaocontroller = Notificacaocontroller();
+  late final Future<List<Map<String, dynamic>>> _historicoFuture;
   int _qtdeVisitas = 0;
   int _qtdePrestadores = 0;
   int _qtdeVisitantes = 0;
   int _qtdeEntregas = 0;
 
   Future<void> carregarEstatisticas() async {
-    UsuarioSession sessionUsuario = context.read<UsuarioSession>();
-    int idMorador = sessionUsuario.idMorador;
-    int qtdeVisitas = await _visitaController.buscarQtdeVisitas(idMorador);
-    int qtdePrestadores = await _visitaController.buscarQtdePrestadoresServico(
-      idMorador,
-    );
-    int qtdeVisitantes = await _visitanteController.buscarQtdeVisitantes(
-      idMorador,
-    );
-    int qtdeEntregas = await _notificacaocontroller.buscarQtdeEntregas(
-      idMorador,
-    );
-    setState(() {
-      _qtdeVisitas = qtdeVisitas;
-      _qtdePrestadores = qtdePrestadores;
-      _qtdeVisitantes = qtdeVisitantes;
-      _qtdeEntregas = qtdeEntregas;
-    });
-  }
+  final sessionUsuario = context.read<UsuarioSession>();
+  final int idMorador = sessionUsuario.idMorador;
+
+  final resultados = await Future.wait([
+    _visitaController.buscarQtdeVisitas(idMorador),
+    _visitaController.buscarQtdePrestadoresServico(idMorador),
+    _visitanteController.buscarQtdeVisitantes(idMorador),
+    _notificacaocontroller.buscarQtdeEntregas(idMorador),
+  ]);
+
+  if (!mounted) return; // Evita o erro se você já tiver saído da tela
+
+  setState(() {
+    _qtdeVisitas = resultados[0];
+    _qtdePrestadores = resultados[1];
+    _qtdeVisitantes = resultados[2];
+    _qtdeEntregas = resultados[3];
+  });
+}
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting('pt_BR', null);
+    _historicoFuture = _buscarHistorico();
     carregarEstatisticas();
   }
 
@@ -81,7 +83,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
           "data": FormatadorDatas().formatarData(item['data_hora_entrada']),
           "data_hora_saida": dataSaidaFormatada,
           "categoria": item['tipo'] ?? 'Outros',
-          "status": item["observacao"],
+          "status": item["observacao"] ?? "",
           "icone": _obterIconePorCategoria(item['tipo']),
         };
       }).toList();
@@ -234,7 +236,7 @@ class _TelaHistoricoLiberacoesState extends State<TelaHistoricoLiberacoes> {
                   // Lista de Liberações
                   Expanded(
                     child: FutureBuilder<List<Map<String, dynamic>>>(
-                      future: _buscarHistorico(),
+                      future: _historicoFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {

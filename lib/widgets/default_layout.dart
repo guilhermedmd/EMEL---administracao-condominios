@@ -17,22 +17,33 @@ class Defaultlayout extends StatelessWidget {
     final alturaTela = MediaQuery.of(context).size.height;
     final larguraTela = MediaQuery.of(context).size.width;
 
-    return Column(
-      children: [
-        const Spacer(),
-        Container(
-          height: alturaTela * (heightConst ?? 0.75),
-          width: larguraTela,
-          decoration: const BoxDecoration(
-            color: Color(0xffF1FFF3), 
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(80),
-              topRight: Radius.circular(80),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final alturaDesejada = alturaTela * (heightConst ?? 0.75);
+        final alturaContainer = constraints.hasBoundedHeight
+            ? (alturaDesejada > constraints.maxHeight
+                ? constraints.maxHeight
+                : alturaDesejada)
+            : alturaDesejada;
+
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: alturaContainer,
+            width: constraints.hasBoundedWidth
+                ? constraints.maxWidth
+                : larguraTela,
+            decoration: const BoxDecoration(
+              color: Color(0xffF1FFF3),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(80),
+                topRight: Radius.circular(80),
+              ),
             ),
+            child: child,
           ),
-          child: child,
-        ),
-      ],
+        );
+      },
     );
   }
 }

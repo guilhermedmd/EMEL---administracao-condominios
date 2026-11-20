@@ -1,14 +1,19 @@
-import 'package:emel/controllers/visita_controller.dart';
+import 'package:emel/Controllers/visita_controller.dart';
 import 'package:emel/pages/historico_liberacoes_page.dart';
 import 'package:emel/pages/inicial_page.dart';
 import 'package:emel/pages/navegacao_page.dart';
+import 'package:emel/pages/visitante/navegacao_page_visitante.dart';
 import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
 import 'package:flutter/material.dart';
 
 class CancelarVisita {
-  static void mostrarPopUp(BuildContext context, int idVisita) {
+  static void mostrarPopUp(
+    BuildContext context,
+    int idVisita, {
+    bool isVisitante = false,
+  }) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -32,14 +37,22 @@ class CancelarVisita {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ElevatedButton(
-                  onPressed: () async{
+                  onPressed: () async {
                     // endpoint que deleta a visita com base no id
-                    await VisitaController().deletarVisitaPorId(idVisita);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const NavegacaoPage(indice: 1,)),
+                    await VisitaController().deletarVisitaPorId(
+                      idVisita,
+                      canceladoPorVisitante: isVisitante,
                     );
-
+                    if (!context.mounted) return;
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => isVisitante
+                            ? const NavegacaoPageVisitante()
+                            : const NavegacaoPage(indice: 1),
+                      ),
+                      (route) => false,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF00D294),

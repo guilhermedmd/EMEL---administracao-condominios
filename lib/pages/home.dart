@@ -56,50 +56,60 @@ class HomePage extends StatelessWidget {
       ),
       body: Defaultlayout(
         heightConst: 0.85,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(80),
+            topRight: Radius.circular(80),
+          ),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Consumer<UsuarioSession>(
-                    builder: (context, session, child) {
-                      String nome = "Carregando...";
-                      // Tenta buscar o nome. Se der erro de Hive vazio, mantém "Carregando..."
-                      try {
-                        if (session.nomeUsuario.isNotEmpty) {
-                          nome = session.nomeUsuario;
+                  Expanded(
+                    child: Consumer<UsuarioSession>(
+                      builder: (context, session, child) {
+                        String nome = "Carregando...";
+                        // Tenta buscar o nome. Se der erro de Hive vazio, mantém "Carregando..."
+                        try {
+                          if (session.nomeUsuario.isNotEmpty) {
+                            nome = session.nomeUsuario;
+                          }
+                        } catch (e) {
+                          nome = "...";
                         }
-                      } catch (e) {
-                        nome = "...";
-                      }
-                      
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Olá,",
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0E3E3E),
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Olá,",
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF0E3E3E),
+                              ),
                             ),
-                          ),
-                          Text(
-                            nome,
-                            style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF00D09E),
+                            Text(
+                              nome,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF00D09E),
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                  const SizedBox(width: 12),
                   Container(
                     width: 130,
                     height: 130,
@@ -128,9 +138,13 @@ class HomePage extends StatelessWidget {
                                 );
                               }
 
-                              return Center(
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
                                   "$bloco, n° $numero",
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -262,95 +276,86 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 12),
 
               // Notificações List
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Consumer<NotificacaoSession>(
-                        builder: (context, notificacaoSession, child) {
-                          try {
-                            final lista = notificacaoSession.pegarNotificacoes;
-                            
-                            if (lista.isEmpty) {
-                              return const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
-                                child: Center(
-                                  child: Text(
-                                    "Nenhuma notificação por enquanto.",
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                                ),
-                              );
-                            }
-                            
-                            return ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(), // Evita conflito com o SingleChildScrollView de fora
-                              shrinkWrap: true,
-                              itemCount: lista.length,
-                              itemBuilder: (context, index) {
-                                final notificacao = lista[index];
-                                return NotificacaoCard.card(
-                                  context, 
-                                  notificacao["titulo"], 
-                                  FormatadorDatas().formatarData(notificacao["data_horario"])
-                                );
-                              },
-                            );
-                          } catch (e) {
-                            // Se a classe disparar um erro porque ainda não há dados
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 30.0),
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: Color(0xFF00D09E),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      
-                      // "Ver Todas" Button
-                      const SizedBox(height: 20),
-                      Center(
-                        child: SizedBox(
-                          width: 200,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context, 
-                                MaterialPageRoute(builder: (context) => const NotificacaoPage())
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF00D09E),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              elevation: 0,
-                            ),
-                            child: const Text(
-                              "Ver Todas",
-                              style: TextStyle(
-                                color: Color(0xFF052224),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
+              Consumer<NotificacaoSession>(
+                builder: (context, notificacaoSession, child) {
+                  try {
+                    final lista = notificacaoSession.pegarNotificacoes;
+
+                    if (lista.isEmpty) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: Center(
+                          child: Text(
+                            "Nenhuma notificação por enquanto.",
+                            style: TextStyle(color: Colors.black54),
                           ),
                         ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: lista.length,
+                      itemBuilder: (context, index) {
+                        final notificacao = lista[index];
+                        return NotificacaoCard.card(
+                          context,
+                          notificacao["titulo"],
+                          FormatadorDatas().formatarData(notificacao["data_horario"]),
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    // Se a classe disparar um erro porque ainda não há dados
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 30.0),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF00D09E),
+                        ),
                       ),
-                      const SizedBox(height: 30),
-                    ],
+                    );
+                  }
+                },
+              ),
+
+              // "Ver Todas" Button
+              const SizedBox(height: 20),
+              Center(
+                child: SizedBox(
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotificacaoPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF00D09E),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      elevation: 0,
+                    ),
+                    child: const Text(
+                      "Ver Todas",
+                      style: TextStyle(
+                        color: Color(0xFF052224),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(height: 30),
             ],
           ),
         ),
+      ),
       ),
     );
   }

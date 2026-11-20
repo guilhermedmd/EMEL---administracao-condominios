@@ -1,6 +1,7 @@
 import 'package:emel/core/supabase/supabase_config.dart';
 import 'package:emel/models/morador.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class MoradorRepository{
 
@@ -17,9 +18,29 @@ class MoradorRepository{
       return null;
       }
      Morador morador = Morador.fromJson(response);
-    //  salva o morador no hive
-     UsuarioSession().salvarMorador(response);
+    //  salva o morador no hive e registra o token do OneSignal
+     await UsuarioSession().salvarMorador(response);
      return morador;
+  }
+
+  Future<void> registrarTokenDispositivo(int idMorador) async {
+    final idDispositivo = OneSignal.User.pushSubscription.id;
+
+    if (idDispositivo == null || idDispositivo.isEmpty) {
+      print("Celular ainda não possui Token do OneSignal.");
+      return;
+    }
+
+    try {
+      await supabase.from('token_notificacao').upsert({
+        'token': idDispositivo,
+        'id_morador_fk': idMorador,
+      }, onConflict: 'id_morador_fk');
+
+      print("Token do morador salvo com sucesso! (morador $idMorador)");
+    } catch (e) {
+      print("Erro ao salvar o token do morador: $e");
+    }
   }
 
 }

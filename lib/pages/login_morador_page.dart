@@ -3,22 +3,26 @@ import 'package:emel/widgets/form_login_morador.dart';
 import 'package:flutter/material.dart';
 
 class LoginMoradorPage extends StatelessWidget {
+  const LoginMoradorPage({super.key});
+
+  @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       body: SafeArea(
+        bottom: false,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 40.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
               child: Text(
                 "Bem-Vindo Morador!",
-                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
               ),
             ),
             Expanded(
               child: Defaultlayout(
-                child: FormLoginMorador()
+                child: FormLoginMorador(),
               ),
             ),
           ],

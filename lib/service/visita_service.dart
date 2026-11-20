@@ -44,8 +44,14 @@ class VisitaService {
     List<dynamic> visitasAgendadas = await visitaRepository.buscarHistoricoVisitante(idVisitante);
     return visitasAgendadas;
   }
-  Future<void> deletarVisita(int idVisita) async{
-    await visitaRepository.deletarVisitaPorId(idVisita);
+  Future<void> deletarVisita(
+    int idVisita, {
+    bool canceladoPorVisitante = false,
+  }) async {
+    await visitaRepository.deletarVisitaPorId(
+      idVisita,
+      canceladoPorVisitante: canceladoPorVisitante,
+    );
   }
 
   Future<void> editarDataHora(int idVisita, DateTime novaDataHora) async{

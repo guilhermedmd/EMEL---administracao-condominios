@@ -14,6 +14,8 @@ class AgendamentoDetalhesScreen extends StatefulWidget {
   final List<String> visitantes;
   final String tipoVisita;
   final bool possuiPermissao;
+  final bool isVisitante;
+  final String? urlMapaCondominio;
 
   const AgendamentoDetalhesScreen({
     super.key,
@@ -23,7 +25,9 @@ class AgendamentoDetalhesScreen extends StatefulWidget {
     required this.visitantes,
     required this.tipoVisita,
     required this.possuiPermissao,
-    required this.dataSaida
+    required this.dataSaida,
+    this.isVisitante = false,
+    this.urlMapaCondominio,
   });
 
   @override
@@ -54,9 +58,136 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
   }
 
   bool get _exibirBotoesAcao {
-    final dataAgendada = dataVisita ?? FormatadorDatas().paraDateTime(_dataHoraAtual);
-    final bool isPassed = dataAgendada.isBefore(DateTime.now());
-    return _permissao && (_dataSaida == "" || _dataSaida == null) && !isPassed;
+    try {
+      final dataAgendada = dataVisita ?? FormatadorDatas().paraDateTime(_dataHoraAtual);
+      final bool isPassed = dataAgendada.isBefore(DateTime.now());
+      return _permissao && !isPassed;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _abrirMapaCondominio(BuildContext context) {
+    final String? url = widget.urlMapaCondominio?.trim();
+    if (url == null || url.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Mapa do condomínio não disponível para esta visita.'),
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: const Color(0xFFF1FFF3),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Cabeçalho do modal
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF00D09E),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.map_outlined, color: Color(0xFF093030)),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Mapa do Condomínio',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF093030),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Color(0xFF093030)),
+                      onPressed: () => Navigator.of(dialogContext).pop(),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Área da imagem com zoom
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.58,
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
+                  ),
+                  child: InteractiveViewer(
+                    minScale: 0.8,
+                    maxScale: 4.0,
+                    child: Center(
+                      child: Image.network(
+                        url,
+                        fit: BoxFit.contain,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: const Color(0xFF00D09E),
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Padding(
+                            padding: EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.broken_image_outlined,
+                                  size: 48,
+                                  color: Colors.black45,
+                                ),
+                                SizedBox(height: 12),
+                                Text(
+                                  'Não foi possível carregar o mapa do condomínio.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.black54),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: Text(
+                  'Use dois dedos para aproximar o mapa',
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -237,9 +368,9 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
                                 ),
                                 child: Column(
                                   children: [
-                                    const Text(
-                                      'Visitantes',
-                                      style: TextStyle(
+                                    Text(
+                                      widget.isVisitante ? 'Morador' : 'Visitantes',
+                                      style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: corTextoEscuro,
@@ -331,7 +462,72 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
                         const Spacer(),
 
                         // Botões condicionais
-                        if (_exibirBotoesAcao) ...[
+                        if (widget.isVisitante) ...[
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              if (_exibirBotoesAcao) ...[
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      CancelarVisita.mostrarPopUp(
+                                        context,
+                                        widget.idVisita ?? 0,
+                                        isVisitante: true,
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFF32459),
+                                      foregroundColor: corTextoEscuro,
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                        horizontal: 8,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Cancelar Visita',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                              ],
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () => _abrirMapaCondominio(context),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: corVerdePrincipal,
+                                    foregroundColor: corTextoEscuro,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                      horizontal: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Mapa Condominio',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ] else if (_exibirBotoesAcao) ...[
                           const SizedBox(height: 24),
                           Row(
                             children: [
