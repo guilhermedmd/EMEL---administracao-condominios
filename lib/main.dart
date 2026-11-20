@@ -1,5 +1,6 @@
 import 'package:emel/pages/informacoes_visita_page.dart';
 import 'package:emel/pages/splash_page.dart';
+import 'package:emel/pages/visitante/acompanhamento_visita.dart';
 import 'package:emel/sessionRepository/moradia_session.dart';
 import 'package:emel/sessionRepository/notificacao_session.dart';
 import 'package:emel/sessionRepository/usuario_session.dart';
@@ -25,6 +26,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
+    // ignore: deprecated_member_use
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!
   );
 

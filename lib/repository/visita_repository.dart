@@ -160,9 +160,7 @@ class VisitaRepository {
   }
 
   Future<void> deletarVisitaPorId(
-    int idVisita, {
-    bool canceladoPorVisitante = false,
-  }) async {
+    int idVisita, bool canceladoPorVisitante) async {
     try {
       final dadosVisita = await supabase
           .from('visita')

@@ -39,10 +39,7 @@ class CancelarVisita {
                 ElevatedButton(
                   onPressed: () async {
                     // endpoint que deleta a visita com base no id
-                    await VisitaController().deletarVisitaPorId(
-                      idVisita,
-                      canceladoPorVisitante: isVisitante,
-                    );
+                    await VisitaController().deletarVisitaPorId(idVisita, isVisitante);
                     if (!context.mounted) return;
                     Navigator.pushAndRemoveUntil(
                       context,

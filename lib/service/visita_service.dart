@@ -45,13 +45,10 @@ class VisitaService {
     return visitasAgendadas;
   }
   Future<void> deletarVisita(
-    int idVisita, {
-    bool canceladoPorVisitante = false,
-  }) async {
-    await visitaRepository.deletarVisitaPorId(
-      idVisita,
-      canceladoPorVisitante: canceladoPorVisitante,
-    );
+    int idVisita,
+    bool canceladoPorVisitante,
+  ) async {
+    await visitaRepository.deletarVisitaPorId(idVisita,canceladoPorVisitante);
   }
 
   Future<void> editarDataHora(int idVisita, DateTime novaDataHora) async{
