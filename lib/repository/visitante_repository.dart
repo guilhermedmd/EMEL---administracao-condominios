@@ -7,17 +7,18 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 class VisitanteRepository {
   final supabase = SupabaseConfig.client;
   Future<Visitante?> loginVisitante(String cpfLogin, String senhaLogin) async {
+    final String cpfLimpo = cpfLogin.replaceAll(RegExp(r'\D'), '');
     var response = await supabase
         .from("visitante")
         .select("id_visitante, nome, cpf, email, senha")
-        .eq("cpf", cpfLogin)
+        .or("cpf.eq.$cpfLogin,cpf.eq.$cpfLimpo")
         .eq("senha", senhaLogin)
         .maybeSingle();
     if (response == null) {
       return null;
     }
     Visitante visitante = Visitante.fromJson(response);
-    UsuarioSession().salvarVisitante(response);
+    await UsuarioSession().salvarVisitante(response);
     return visitante;
   }
 

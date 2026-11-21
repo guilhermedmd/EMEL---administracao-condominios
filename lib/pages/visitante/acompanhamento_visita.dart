@@ -1,15 +1,30 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// Ajuste os imports abaixo conforme o caminho das pastas no seu projeto:
+import 'package:emel/controllers/visita_controller.dart';
+import 'package:emel/utils/formator_datas.dart';
 import 'package:emel/widgets/default_layout.dart';
 import 'package:emel/widgets/confirmar_entrada.dart';
 
 class AcompanhamentoVisitaPage extends StatefulWidget {
+  final int idVisita;
+  final int idVisitante;
   final String nomeMorador;
+  final DateTime? dataChegada;
+  final DateTime? dataEntrada;
+  final int? tempoAtendimento;
+  final String? statusAtendimento;
+  final VoidCallback? onAtualizar;
 
   const AcompanhamentoVisitaPage({
     super.key,
-    this.nomeMorador = 'Daniela Martins',
+    required this.idVisita,
+    required this.idVisitante,
+    this.nomeMorador = 'Morador',
+    this.dataChegada,
+    this.dataEntrada,
+    this.tempoAtendimento,
+    this.statusAtendimento,
+    this.onAtualizar,
   });
 
   @override
@@ -18,12 +33,64 @@ class AcompanhamentoVisitaPage extends StatefulWidget {
 }
 
 class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
+  final VisitaController _visitaController = VisitaController();
+
   Timer? _timer;
   DateTime? _horaChegada;
   Duration _tempoDecorrido = Duration.zero;
 
   bool _chegadaRegistrada = false;
   bool _entradaConfirmada = false;
+  bool _isProcessando = false;
+  String? _statusBanco;
+
+  @override
+  void initState() {
+    super.initState();
+    _restaurarEstadoInicial();
+  }
+
+  @override
+  void didUpdateWidget(covariant AcompanhamentoVisitaPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.dataChegada != widget.dataChegada ||
+        oldWidget.dataEntrada != widget.dataEntrada ||
+        oldWidget.tempoAtendimento != widget.tempoAtendimento ||
+        oldWidget.statusAtendimento != widget.statusAtendimento) {
+      _restaurarEstadoInicial();
+    }
+  }
+
+  void _restaurarEstadoInicial() {
+    _statusBanco = widget.statusAtendimento;
+
+    final dataEntrada =
+        FormatadorDatas().converterParaDataLocal(widget.dataEntrada);
+    final dataChegada =
+        FormatadorDatas().converterParaDataLocal(widget.dataChegada);
+
+    // Caso 1: Entrada já foi confirmada anteriormente
+    if (dataEntrada != null) {
+      _chegadaRegistrada = true;
+      _entradaConfirmada = true;
+      if (widget.tempoAtendimento != null && widget.tempoAtendimento! >= 0) {
+        _tempoDecorrido = Duration(seconds: widget.tempoAtendimento!);
+      } else if (dataChegada != null) {
+        final diff = dataEntrada.difference(dataChegada);
+        _tempoDecorrido = diff.isNegative ? Duration.zero : diff;
+      }
+      return;
+    }
+
+    // Caso 2: Chegada já foi registrada anteriormente e está aguardando atendimento
+    if (dataChegada != null) {
+      _chegadaRegistrada = true;
+      _horaChegada = dataChegada;
+      final diff = DateTime.now().difference(dataChegada);
+      _tempoDecorrido = diff.isNegative ? Duration.zero : diff;
+      _iniciarTimer();
+    }
+  }
 
   @override
   void dispose() {
@@ -31,55 +98,169 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
     super.dispose();
   }
 
-  void _iniciarCronometro() {
-    setState(() {
-      _chegadaRegistrada = true;
-      _horaChegada = DateTime.now();
-    });
-
+  void _iniciarTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted || _horaChegada == null) return;
+      final diff = DateTime.now().difference(_horaChegada!);
       setState(() {
-        _tempoDecorrido = DateTime.now().difference(_horaChegada!);
+        _tempoDecorrido = diff.isNegative ? Duration.zero : diff;
       });
     });
+  }
+
+  Future<void> _registrarChegada() async {
+    setState(() => _isProcessando = true);
+
+    try {
+      await _visitaController.registrarChegada(
+        widget.idVisita,
+        widget.idVisitante,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _chegadaRegistrada = true;
+        _horaChegada = DateTime.now();
+        _tempoDecorrido = Duration.zero;
+      });
+
+      _iniciarTimer();
+      widget.onAtualizar?.call();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: const Color(0xFFEA2A24),
+            content: Text('Erro ao registrar chegada: $e'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessando = false);
+      }
+    }
   }
 
   Future<void> _abrirConfirmacaoEntrada() async {
     final String? codigoDigitado =
         await ConfirmarEntradaPopup.mostrarPopUp(context);
 
-    // Como ainda não está ligado ao banco, qualquer código de 4 dígitos confirma a tela
-    if (codigoDigitado != null && codigoDigitado.length == 4) {
+    if (codigoDigitado == null || codigoDigitado.length < 4) {
+      return;
+    }
+
+    setState(() => _isProcessando = true);
+
+    try {
+      // 1. Valida se o código digitado confere com o do banco
+      final bool codigoCorreto = await _visitaController.validarCodigoEntrada(
+        widget.idVisita,
+        widget.idVisitante,
+        codigoDigitado,
+      );
+
+      if (!codigoCorreto) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              backgroundColor: Color(0xFFEA2A24),
+              content: Text(
+                'Código incorreto! Solicite o código de 4 dígitos informado pelo síndico.',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+            ),
+          );
+        }
+        return;
+      }
+
+      // 2. Se o código estiver correto, grava data_entrada e aciona Trigger 2
+      final resultado = await _visitaController.registrarEntrada(
+        widget.idVisita,
+        widget.idVisitante,
+      );
+
       _timer?.cancel();
-      setState(() {
-        _entradaConfirmada = true;
-      });
+
+      if (mounted) {
+        setState(() {
+          _entradaConfirmada = true;
+          if (resultado != null) {
+            final int? segundosBanco = resultado['tempo_atendimento'] as int?;
+            if (segundosBanco != null) {
+              _tempoDecorrido = Duration(seconds: segundosBanco);
+            }
+            _statusBanco = resultado['status_atendimento']?.toString();
+          }
+        });
+        widget.onAtualizar?.call();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: const Color(0xFFEA2A24),
+            content: Text('Erro ao registrar entrada: $e'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessando = false);
+      }
     }
   }
 
   String get _statusTexto {
+    if (_statusBanco != null) {
+      switch (_statusBanco!.toLowerCase().trim()) {
+        case 'rapido':
+          return 'Rápido';
+        case 'ok':
+          return 'Ok';
+        case 'demorado':
+          return 'Demorado';
+        case 'expirado':
+          return 'Expirado';
+        default:
+          return _statusBanco!;
+      }
+    }
+
     final segundos = _tempoDecorrido.inSeconds;
     if (segundos <= 120) return 'Rápido';
     if (segundos <= 300) return 'Ok';
-    return 'Demorado';
+    if (segundos <= 1200) return 'Demorado';
+    return 'Expirado';
   }
 
   Color get _statusCor {
-    final segundos = _tempoDecorrido.inSeconds;
-    if (segundos <= 120) return const Color(0xFF00D294);
-    if (segundos <= 300) return const Color(0xFFFF9119);
-    return const Color(0xFFEA2A24);
+    final status = _statusTexto.toLowerCase();
+    if (status == 'rápido' || status == 'rapido') {
+      return const Color(0xFF00D294);
+    }
+    if (status == 'ok') {
+      return const Color(0xFFFF9119);
+    }
+    return const Color(0xFFEA2A24); // Demorado ou Expirado
   }
 
   @override
   Widget build(BuildContext context) {
-    final minutos =
-        _tempoDecorrido.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final segundos =
-        _tempoDecorrido.inSeconds.remainder(60).toString().padLeft(2, '0');
+    final totalSegundos =
+        _tempoDecorrido.isNegative ? 0 : _tempoDecorrido.inSeconds;
+    final totalMinutos = totalSegundos ~/ 60;
+    final segs = totalSegundos % 60;
+
+    final minutosDisplay = totalMinutos > 99 ? 99 : totalMinutos;
+    final minutos = minutosDisplay.toString().padLeft(2, '0');
+    final segundos = segs.toString().padLeft(2, '0');
 
     return Scaffold(
+      appBar: AppBar(automaticallyImplyLeading: false,),
       backgroundColor: const Color(0xFF00D294),
       body: Stack(
         children: [
@@ -93,7 +274,11 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
                   color: Colors.white,
                   size: 28,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
+                },
               ),
             ),
           ),
@@ -276,6 +461,14 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
   }
 
   Widget _buildRodapeAcao() {
+    if (_isProcessando) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFF00D294),
+        ),
+      );
+    }
+
     // Estado 3: Entrada confirmada -> exibe pílula com status
     if (_entradaConfirmada) {
       return Container(
@@ -311,7 +504,7 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: _statusTexto == 'Demorado'
+                  color: _statusTexto == 'Demorado' || _statusTexto == 'Expirado'
                       ? Colors.white
                       : const Color(0xFF0D3B36),
                 ),
@@ -345,7 +538,7 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
 
     // Estado 1: Inicial -> botão verde "registrar chegada"
     return ElevatedButton(
-      onPressed: _iniciarCronometro,
+      onPressed: _registrarChegada,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF09D697),
         foregroundColor: const Color(0xFF0D3B36),

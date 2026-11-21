@@ -16,6 +16,8 @@ class AgendamentoDetalhesScreen extends StatefulWidget {
   final bool possuiPermissao;
   final bool isVisitante;
   final String? urlMapaCondominio;
+  final int? tempoAtendimento;
+  final String? statusAtendimento;
 
   const AgendamentoDetalhesScreen({
     super.key,
@@ -28,6 +30,8 @@ class AgendamentoDetalhesScreen extends StatefulWidget {
     required this.dataSaida,
     this.isVisitante = false,
     this.urlMapaCondominio,
+    this.tempoAtendimento,
+    this.statusAtendimento,
   });
 
   @override
@@ -40,6 +44,8 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
   late String _dataHoraAtual;
   late String? _dataSaida;
   DateTime? dataVisita;
+  int? _tempoAtendimento;
+  String? _statusAtendimento;
 
   List<String> _separandoDataHora(String dataHora) {
     List<String> horaData = dataHora.split("-");
@@ -55,6 +61,66 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
     _permissao = widget.possuiPermissao;
     _dataHoraAtual = widget.dataHora;
     _dataSaida = widget.dataSaida;
+    _tempoAtendimento = widget.tempoAtendimento;
+    _statusAtendimento = widget.statusAtendimento;
+
+    if (_tempoAtendimento == null && _statusAtendimento == null && widget.idVisita != null) {
+      _carregarDadosAtendimento();
+    }
+  }
+
+  Future<void> _carregarDadosAtendimento() async {
+    try {
+      final dados = await VisitaController()
+          .buscarDadosAtendimentoPorIdVisita(widget.idVisita!);
+      if (dados != null && mounted) {
+        setState(() {
+          _tempoAtendimento = dados['tempo_atendimento'] as int?;
+          _statusAtendimento = dados['status_atendimento']?.toString();
+        });
+      }
+    } catch (e) {
+      debugPrint('Erro ao buscar tempo de atendimento: $e');
+    }
+  }
+
+  String _formatarSegundos(int segundos) {
+    final minutos = segundos ~/ 60;
+    final segs = segundos % 60;
+    if (minutos == 0) {
+      return '${segs}s';
+    }
+    return '${minutos}m ${segs.toString().padLeft(2, '0')}s';
+  }
+
+  String _formatarTextoStatus(String status) {
+    switch (status.toLowerCase().trim()) {
+      case 'rapido':
+        return 'Rápido';
+      case 'ok':
+        return 'Ok';
+      case 'demorado':
+        return 'Demorado';
+      case 'expirado':
+        return 'Expirado';
+      default:
+        return status;
+    }
+  }
+
+  Color _obterCorStatus(String status) {
+    switch (status.toLowerCase().trim()) {
+      case 'rápido':
+      case 'rapido':
+        return const Color(0xFF00D294);
+      case 'ok':
+        return const Color(0xFFFF9119);
+      case 'demorado':
+      case 'expirado':
+        return const Color(0xFFEA2A24);
+      default:
+        return const Color(0xFF00D294);
+    }
   }
 
   bool get _exibirBotoesAcao {
@@ -458,6 +524,70 @@ class _AgendamentoDetalhesScreenState extends State<AgendamentoDetalhesScreen> {
                             ],
                           ),
                         ),
+
+                        // Card Atendimento na Portaria (Tempo e Status)
+                        if (_tempoAtendimento != null || _statusAtendimento != null) ...[
+                          const SizedBox(height: 16),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 14,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(color: corBordaCard, width: 1.2),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.timer_outlined,
+                                      color: corTextoEscuro,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _tempoAtendimento != null
+                                          ? 'Espera: ${_formatarSegundos(_tempoAtendimento!)}'
+                                          : 'Atendimento Portaria',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: corTextoEscuro,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (_statusAtendimento != null)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 14,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: _obterCorStatus(_statusAtendimento!),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      _formatarTextoStatus(_statusAtendimento!),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: _statusAtendimento!.toLowerCase() == 'demorado' ||
+                                                _statusAtendimento!.toLowerCase() == 'expirado'
+                                            ? Colors.white
+                                            : corTextoEscuro,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
 
                         const Spacer(),
 

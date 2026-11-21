@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-// Ajuste o import abaixo conforme o caminho da pasta no seu projeto:
 import 'package:emel/widgets/default_layout.dart';
 
 class SemVisitaPage extends StatelessWidget {
-  const SemVisitaPage({super.key});
+  final VoidCallback? onAtualizar;
+
+  const SemVisitaPage({super.key, this.onAtualizar});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+      ),
       backgroundColor: const Color(0xFF00D294),
       body: Stack(
         children: [
@@ -21,7 +25,11 @@ class SemVisitaPage extends StatelessWidget {
                   color: Colors.white,
                   size: 28,
                 ),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
+                },
               ),
             ),
           ),
@@ -67,15 +75,32 @@ class SemVisitaPage extends StatelessWidget {
                         width: 1.2,
                       ),
                     ),
-                    child: const Text(
-                      'Você não possui nenhuma\nvisita agendada para a\npróxima hora',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF0D3B36),
-                        height: 1.35,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Você não possui nenhuma\nvisita agendada para a\npróxima hora',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF0D3B36),
+                            height: 1.35,
+                          ),
+                        ),
+                        if (onAtualizar != null) ...[
+                          const SizedBox(height: 16),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.refresh,
+                              color: Color(0xFF00D294),
+                              size: 28,
+                            ),
+                            tooltip: 'Verificar novamente',
+                            onPressed: onAtualizar,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ],

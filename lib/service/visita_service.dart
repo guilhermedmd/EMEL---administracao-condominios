@@ -2,8 +2,6 @@ import 'package:emel/models/visita.dart';
 import 'package:emel/repository/visita_repository.dart';
 import 'package:emel/repository/visitante_repository.dart';
 import 'package:emel/utils/formator_cpf.dart';
-import 'package:http/http.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class VisitaService {
   final VisitaRepository visitaRepository = VisitaRepository();
@@ -59,5 +57,37 @@ class VisitaService {
       final response = await visitaRepository.buscarHistoricoVistas(idMorador);
       return response;
    }
-  
+
+  Future<Map<String, dynamic>?> buscarVisitaProximaHora(int idVisitante) async {
+    return await visitaRepository.buscarVisitaProximaHora(idVisitante);
+  }
+
+  Future<void> registrarChegada(int idVisita, int idVisitante) async {
+    await visitaRepository.registrarChegada(idVisita, idVisitante);
+  }
+
+  Future<bool> validarCodigoEntrada(
+    int idVisita,
+    int idVisitante,
+    String codigoDigitado,
+  ) async {
+    return await visitaRepository.validarCodigoEntrada(
+      idVisita,
+      idVisitante,
+      codigoDigitado,
+    );
+  }
+
+  Future<Map<String, dynamic>?> registrarEntrada(
+    int idVisita,
+    int idVisitante,
+  ) async {
+    return await visitaRepository.registrarEntrada(idVisita, idVisitante);
+  }
+
+  Future<Map<String, dynamic>?> buscarDadosAtendimentoPorIdVisita(
+    int idVisita,
+  ) async {
+    return await visitaRepository.buscarDadosAtendimentoPorIdVisita(idVisita);
+  }
 }

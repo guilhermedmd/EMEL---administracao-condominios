@@ -1,6 +1,5 @@
 import 'package:emel/models/visita.dart';
 import 'package:emel/service/visita_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class VisitaController {
   VisitaService visitaService = VisitaService();
@@ -56,5 +55,38 @@ class VisitaController {
   Future<List<dynamic>> buscarHistoricoVisitas(int idMorador) async{
     final response = await visitaService.buscarHistoricoVisitas(idMorador);
     return response;
+  }
+
+  Future<Map<String, dynamic>?> buscarVisitaProximaHora(int idVisitante) async {
+    return await visitaService.buscarVisitaProximaHora(idVisitante);
+  }
+
+  Future<void> registrarChegada(int idVisita, int idVisitante) async {
+    await visitaService.registrarChegada(idVisita, idVisitante);
+  }
+
+  Future<bool> validarCodigoEntrada(
+    int idVisita,
+    int idVisitante,
+    String codigoDigitado,
+  ) async {
+    return await visitaService.validarCodigoEntrada(
+      idVisita,
+      idVisitante,
+      codigoDigitado,
+    );
+  }
+
+  Future<Map<String, dynamic>?> registrarEntrada(
+    int idVisita,
+    int idVisitante,
+  ) async {
+    return await visitaService.registrarEntrada(idVisita, idVisitante);
+  }
+
+  Future<Map<String, dynamic>?> buscarDadosAtendimentoPorIdVisita(
+    int idVisita,
+  ) async {
+    return await visitaService.buscarDadosAtendimentoPorIdVisita(idVisita);
   }
 }

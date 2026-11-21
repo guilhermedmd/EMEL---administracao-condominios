@@ -26,7 +26,7 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
 
       if (mounted) {
         setState(() {
-          listaVistas.addAll(list);
+          listaVistas = List.from(list);
           isLoading = false;
         });
       }
@@ -190,6 +190,8 @@ class _HomeVisitantePageState extends State<HomeVisitantePage> {
                                             possuiPermissao: true,
                                             isVisitante: true,
                                             urlMapaCondominio: urlMapaCondominio,
+                                            tempoAtendimento: item["tempo_atendimento"] as int?,
+                                            statusAtendimento: item["status_atendimento"]?.toString(),
                                           ),
                                         ),
                                       );
