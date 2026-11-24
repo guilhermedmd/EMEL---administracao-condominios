@@ -84,6 +84,16 @@ class VisitaController {
     return await visitaService.registrarEntrada(idVisita, idVisitante);
   }
 
+  Future<Map<String, dynamic>?> encerrarVisitaPorExpiracao(
+    int idVisita,
+    int idVisitante,
+  ) async {
+    return await visitaService.encerrarVisitaPorExpiracao(
+      idVisita,
+      idVisitante,
+    );
+  }
+
   Future<Map<String, dynamic>?> buscarDadosAtendimentoPorIdVisita(
     int idVisita,
   ) async {

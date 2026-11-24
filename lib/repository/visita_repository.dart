@@ -514,6 +514,31 @@ class VisitaRepository {
     }
   }
 
+  // Encerra a visita por expiração automática (20 minutos decorridos sem confirmação de código)
+  // Faz o update somente do horário de entrada (data_entrada), disparando a Trigger 2 no banco,
+  // que calcula o tempo de atendimento e define o status como 'expirado'
+  Future<Map<String, dynamic>?> encerrarVisitaPorExpiracao(
+    int idVisita,
+    int idVisitante,
+  ) async {
+    try {
+      final response = await supabase
+          .from('participantes_visita')
+          .update({
+            'data_entrada': DateTime.now().toUtc().toIso8601String(),
+          })
+          .eq('id_visita_fk', idVisita)
+          .eq('id_visitante_fk', idVisitante)
+          .select('tempo_atendimento, status_atendimento, data_entrada')
+          .maybeSingle();
+
+      return response != null ? Map<String, dynamic>.from(response) : null;
+    } catch (e) {
+      print('Erro ao encerrar visita por expiração: $e');
+      rethrow;
+    }
+  }
+
   // Busca dados de atendimento de uma visita específica
   Future<Map<String, dynamic>?> buscarDadosAtendimentoPorIdVisita(
     int idVisita,

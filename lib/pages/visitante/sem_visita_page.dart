@@ -9,38 +9,14 @@ class SemVisitaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
       backgroundColor: const Color(0xFF00D294),
-      body: Stack(
-        children: [
-          // Cabeçalho verde com botão voltar
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 12, top: 8),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 28,
-                ),
-                onPressed: () {
-                  if (Navigator.of(context).canPop()) {
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ),
-          ),
-
-          Defaultlayout(
-            heightConst: 0.84,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-              child: Column(
-                children: [
-                  // Pílula título "Visita"
+      body: Defaultlayout(
+        heightConst: 0.84,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+          child: Column(
+            children: [
+              // Pílula título "Visita"
                   Container(
                     width: 220,
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -107,8 +83,6 @@ class SemVisitaPage extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
     );
   }
 }

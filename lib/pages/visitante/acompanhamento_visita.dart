@@ -15,6 +15,8 @@ class AcompanhamentoVisitaPage extends StatefulWidget {
   final String? statusAtendimento;
   final VoidCallback? onAtualizar;
 
+  final int tempoLimiteExpiracaoSegundos;
+
   const AcompanhamentoVisitaPage({
     super.key,
     required this.idVisita,
@@ -25,6 +27,7 @@ class AcompanhamentoVisitaPage extends StatefulWidget {
     this.tempoAtendimento,
     this.statusAtendimento,
     this.onAtualizar,
+    this.tempoLimiteExpiracaoSegundos = 1200,
   });
 
   @override
@@ -35,6 +38,8 @@ class AcompanhamentoVisitaPage extends StatefulWidget {
 class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
   final VisitaController _visitaController = VisitaController();
 
+  int get _limiteExpiracao => widget.tempoLimiteExpiracaoSegundos;
+
   Timer? _timer;
   DateTime? _horaChegada;
   Duration _tempoDecorrido = Duration.zero;
@@ -42,6 +47,8 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
   bool _chegadaRegistrada = false;
   bool _entradaConfirmada = false;
   bool _isProcessando = false;
+  bool _isExpirando = false;
+  bool _isPopupAberto = false;
   String? _statusBanco;
 
   @override
@@ -56,7 +63,8 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
     if (oldWidget.dataChegada != widget.dataChegada ||
         oldWidget.dataEntrada != widget.dataEntrada ||
         oldWidget.tempoAtendimento != widget.tempoAtendimento ||
-        oldWidget.statusAtendimento != widget.statusAtendimento) {
+        oldWidget.statusAtendimento != widget.statusAtendimento ||
+        oldWidget.tempoLimiteExpiracaoSegundos != widget.tempoLimiteExpiracaoSegundos) {
       _restaurarEstadoInicial();
     }
   }
@@ -88,7 +96,17 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
       _horaChegada = dataChegada;
       final diff = DateTime.now().difference(dataChegada);
       _tempoDecorrido = diff.isNegative ? Duration.zero : diff;
-      _iniciarTimer();
+
+      // Se já atingiu ou superou o limite de expiração, encerra automaticamente
+      if (_tempoDecorrido.inSeconds >= _limiteExpiracao) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _encerrarPorExpiracao();
+          }
+        });
+      } else {
+        _iniciarTimer();
+      }
     }
   }
 
@@ -103,8 +121,19 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted || _horaChegada == null) return;
       final diff = DateTime.now().difference(_horaChegada!);
+      final novoTempo = diff.isNegative ? Duration.zero : diff;
+
+      if (novoTempo.inSeconds >= _limiteExpiracao) {
+        _timer?.cancel();
+        setState(() {
+          _tempoDecorrido = novoTempo;
+        });
+        _encerrarPorExpiracao();
+        return;
+      }
+
       setState(() {
-        _tempoDecorrido = diff.isNegative ? Duration.zero : diff;
+        _tempoDecorrido = novoTempo;
       });
     });
   }
@@ -145,10 +174,15 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
   }
 
   Future<void> _abrirConfirmacaoEntrada() async {
-    final String? codigoDigitado =
-        await ConfirmarEntradaPopup.mostrarPopUp(context);
+    String? codigoDigitado;
+    _isPopupAberto = true;
+    try {
+      codigoDigitado = await ConfirmarEntradaPopup.mostrarPopUp(context);
+    } finally {
+      _isPopupAberto = false;
+    }
 
-    if (codigoDigitado == null || codigoDigitado.length < 4) {
+    if (codigoDigitado == null || codigoDigitado.length < 4 || _entradaConfirmada) {
       return;
     }
 
@@ -214,6 +248,64 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
     }
   }
 
+  // Encerra o cronômetro automaticamente ao atingir 20 minutos (1200 segundos) sem código
+  Future<void> _encerrarPorExpiracao() async {
+    if (_isExpirando || _entradaConfirmada) return;
+    _isExpirando = true;
+    _timer?.cancel();
+
+    // Fecha o modal de confirmação de código caso esteja aberto
+    if (_isPopupAberto && mounted) {
+      Navigator.of(context).pop();
+      _isPopupAberto = false;
+    }
+
+    setState(() {
+      _entradaConfirmada = true;
+      _statusBanco = 'Expirado';
+      if (_tempoDecorrido.inSeconds < _limiteExpiracao) {
+        _tempoDecorrido = Duration(seconds: _limiteExpiracao);
+      }
+    });
+
+    try {
+      final resultado = await _visitaController.encerrarVisitaPorExpiracao(
+        widget.idVisita,
+        widget.idVisitante,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        if (resultado != null) {
+          final int? segundosBanco = resultado['tempo_atendimento'] as int?;
+          if (segundosBanco != null) {
+            _tempoDecorrido = Duration(seconds: segundosBanco);
+          }
+          _statusBanco =
+              resultado['status_atendimento']?.toString() ?? 'Expirado';
+        }
+      });
+
+      final minutos = _limiteExpiracao ~/ 60;
+      final textoLimite = minutos > 0 ? '$minutos minuto(s)' : '$_limiteExpiracao segundos';
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: const Color(0xFFEA2A24),
+          content: Text(
+            'Tempo limite de $textoLimite atingido. O atendimento foi encerrado como Expirado.',
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Erro ao registrar expiração de atendimento no banco: $e');
+    } finally {
+      _isExpirando = false;
+    }
+  }
+
   String get _statusTexto {
     if (_statusBanco != null) {
       switch (_statusBanco!.toLowerCase().trim()) {
@@ -231,10 +323,10 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
     }
 
     final segundos = _tempoDecorrido.inSeconds;
-    if (segundos <= 120) return 'Rápido';
-    if (segundos <= 300) return 'Ok';
-    if (segundos <= 1200) return 'Demorado';
-    return 'Expirado';
+    if (segundos >= _limiteExpiracao) return 'Expirado';
+    if (segundos <= 120 && _limiteExpiracao > 120) return 'Rápido';
+    if (segundos <= 300 && _limiteExpiracao > 300) return 'Ok';
+    return 'Demorado';
   }
 
   Color get _statusCor {
@@ -260,37 +352,14 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
     final segundos = segs.toString().padLeft(2, '0');
 
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false,),
       backgroundColor: const Color(0xFF00D294),
-      body: Stack(
-        children: [
-          // Cabeçalho verde com botão voltar
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 12, top: 8),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 28,
-                ),
-                onPressed: () {
-                  if (Navigator.of(context).canPop()) {
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ),
-          ),
-
-          // Container principal usando o Defaultlayout do projeto
-          Defaultlayout(
-            heightConst: 0.84,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-              child: Column(
-                children: [
-                  // Pílula título "Visita"
+      body: Defaultlayout(
+        heightConst: 0.84,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+          child: Column(
+            children: [
+              // Pílula título "Visita"
                   Container(
                     width: 220,
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -396,8 +465,6 @@ class _AcompanhamentoVisitaPageState extends State<AcompanhamentoVisitaPage> {
               ),
             ),
           ),
-        ],
-      ),
     );
   }
 
